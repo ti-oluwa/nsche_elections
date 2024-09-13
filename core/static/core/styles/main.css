@@ -1,0 +1,180 @@
+@import url('https://fonts.googleapis.com/css?family=Manrope');
+@import url('https://fonts.googleapis.com/css?family=DM+Sans');
+@import url('https://fonts.googleapis.com/css?family=Raleway');
+
+:root{
+    --bluish-gray: #d5dce5;
+    --light-gray: #f2f2f2;
+    --dark-gray: #373b3f;
+    --white: #fff;
+    --text-dark: #2f2f2f;
+    --deep-blue: #031926;
+    --teal: #468189;
+    --cambridge-blue: #77aca2;
+    --ash-gray: #9dbebb;
+    --parchment: #f4e9cd;
+    --lavender: #DADFF7;
+    --jasper: #D5573B;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container{
+    margin: 0 auto;
+    width: 90%;
+    max-width: 1200px;
+}
+
+.stop_scroll{
+    height: 100%;
+    overflow: hidden !important;
+}
+
+body{
+    font-family: "Manrope";  
+    overflow-wrap: break-word;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    font-smooth: always !important;
+    -webkit-text-size-adjust: none;
+    color: var(--text-dark);
+    background: var(--white);
+    overflow-x: hidden !important;
+    width: 100%;
+    min-height: 100vh;
+}
+
+h1,h2, h3, h4, h5, h6{
+    font-family: "Manrope";
+    color: var(--text-dark);
+}
+
+a{
+    text-decoration: underline;
+}
+
+a:hover{
+    transition: 0.05s ease-out color;
+}
+
+p, li, a{
+    font-family: "Manrope";
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+li{
+    list-style: none;
+}
+
+::placeholder{
+    color: var(--bluish-gray);
+    font-family: "Manrope";
+}
+
+input{
+    font-family: "Manrope";
+    border-radius: 4px;
+    border: 1px solid var(--dark-gray);
+    outline: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-dark);
+    padding: 4px;
+}
+
+input:focus-within{
+    border-bottom: 1px solid var(--teal) !important;
+    margin: -1px !important;
+}
+
+input:not(:placeholder-shown){
+    border-bottom: 1px solid var(--teal) !important;
+    margin: -1px !important;
+}
+
+input[type="checkbox"]{
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--dark-gray);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+}
+
+input[type="checkbox"]:checked{
+    background: var(--teal);
+    border: 1px solid var(--teal);
+}
+
+.input-invalid{
+    box-shadow: 0px 1px 2px var(--jasper) !important;
+}
+
+label{
+    color: var(--text-dark);
+    font-weight: 700;
+}
+
+button{
+    font-family: "Manrope";
+    border-radius: 4px;
+    border: none;
+    font-size: 18px;
+    font-weight: 500;
+    padding: 10px 20px;
+    outline: none !important;
+    transition: all 0.1s ease-out;
+    cursor: pointer;
+}
+
+.btn-primary{
+    background: var(--jasper);
+    color: var(--white);
+    box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:active{
+    background: var(--parchment);
+    color: var(--white);
+}
+
+.btn-primary:hover{
+    background: var(--jasper);
+    color: var(--white);
+    box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.btn-secondary{
+    background: var(--parchment);
+    color: var(--text-dark);
+}
+
+.btn-secondary:active{
+    background: transparent;
+    color: var(--text-dark);
+}
+
+.btn-secondary:hover{
+    opacity: 0.8;
+    color: var(--text-dark);
+}
+
+button:disabled, input:disabled, select:disabled{
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.show-block{
+    display: block !important;
+}
+
+.show-flex{
+    display: flex !important;
+}

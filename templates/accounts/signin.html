@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'core//styles//form_card.css' %}">
+<link rel="stylesheet" href="{% static 'accounts//styles//auth_page.css' %}">
+{% endblock styles %}
+
+
+{% block page_title %}Sign In{% endblock page_title %}
+
+
+{% block content %}
+<div class="container">
+    <main>
+        <section id="main-text">
+            <h1>NSCHE</h1>
+            <p>
+                Sign into your account.
+            </p>
+        </section>
+
+        <section id="form-wrapper">
+            <div class="form-card">
+                <div class="form-header">
+                    <h2>Log In</h2>
+                    <p>
+                        Sign into your account.
+                    </p>
+                </div>
+
+                <!-- Sign In Form Section -->
+                <form action="{% url 'accounts:signin' %}" id="signin-form">
+                    {% csrf_token %}
+                    <div class="form-fields">
+                        <div class="form-field"> 
+                            <label for="email" hidden>Email Address</label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                class="form-input"
+                                placeholder="Email address" 
+                                autofocus
+                                autocomplete="email"
+                                required
+                                title="Enter your email address"
+                            >
+                            <small class="field-message"></small>
+                        </div>
+
+                        <div class="form-field"> 
+                            <label for="matriculation_number" hidden>Matriculation Number</label>
+                            <input 
+                                type="text" 
+                                id="matriculation_number" 
+                                name="matriculation_number" 
+                                class="form-input"
+                                placeholder="Matriculation Number" 
+                                autofocus
+                                required
+                                title="Enter your matriculation number"
+                                pattern="^[a-zA-Z]{3,4}\/\d{4,7}\/\d{4}$"
+                            >
+                            <small class="field-message"></small>
+                        </div>
+                        
+                        <div class="form-field">
+                            <label for="password" hidden>Password</label>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                class="form-input" 
+                                placeholder="Password"
+                                required
+                                title="Enter your password"
+                            >
+                            <small class="field-message"></small>
+                        </div>
+                    </div>
+
+                    <div class="submit-btn-wrapper">
+                        <button class="btn-primary submit-btn" type="submit">
+                            Sign In
+                        </button>
+                    </div>
+
+                    <div class="form-footer">
+                        <small class="footer-item">
+                            Don't have an account?
+                            <a href="{% url 'accounts:registration' %}">Register</a>
+                        </small>
+
+                        <small class="footer-item">
+                            Can't remember password?
+                            <a href="">Reset password</a>
+                        </small>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+    </main>
+</div>
+{% endblock content %}
+
+
+{% block scripts %}
+<script src="{% static 'core//scripts//formCard.js' %}"></script>
+<script src="{% static 'accounts//scripts//signin.js' %}"></script>
+{% endblock scripts %}
+

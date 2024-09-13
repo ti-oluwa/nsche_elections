@@ -25,7 +25,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
     "apps.accounts",
+    "apps.tokens",
+    "apps.students",
 ]
 
 MIDDLEWARE = [
@@ -40,7 +43,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "nsche_elections.urls"
+ROOT_URLCONF = "core.urls"
 
 TEMPLATES = [
     {
@@ -53,12 +56,13 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "helpers.context_processors.application",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = "nsche_elections.wsgi.application"
+WSGI_APPLICATION = "core.wsgi.application"
 
 
 DATABASES = {
@@ -89,7 +93,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTHENTICATION_BACKENDS = []
+AUTHENTICATION_BACKENDS = [
+    "apps.accounts.auth_backends.EmailMatriculationNumberBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
+AUTH_USER_MODEL = "accounts.UserAccount"
 
 LANGUAGE_CODE = "en-us"
 
@@ -106,8 +115,31 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, r"core/static"),
+]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+#################
+# EMAIL CONFIGS #
+#################
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+
+EMAIL_PORT = os.getenv("EMAIL_PORT")
+
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "true").lower() == "true"
+
+EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", "false").lower() == "true"
+
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 LOGIN_URL = "accounts:signin"
@@ -122,6 +154,10 @@ else:
 
 
 CSRF_TRUSTED_ORIGINS = ["https://*"]
+
+OTP_LENGTH = 6
+
+OTP_VALIDITY_PERIOD = 60 * 30
 
 ####################
 # HELPERS SETTINGS #

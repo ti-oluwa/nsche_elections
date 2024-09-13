@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {{ app_name }} |
+        {% block page_title %}{% endblock page_title %}
+    </title>
+
+    <!-- Noty.js Themes-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/noty/lib/noty.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/noty/lib/themes/semanticui.css">
+
+    <!-- Selectize.js -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/selectize@0.12.6/dist/css/selectize.min.css">
+
+    <link rel="stylesheet" href="{% static 'core//styles//main.css' %}">
+    <link rel="stylesheet" href="{% static 'core//styles//base.css' %}">
+    {% block styles %}
+    {% endblock styles %}
+</head>
+
+<body>
+    <header>
+        <nav class="container">
+            <div id="logo">
+                <a href="">{{ app_name }}</a>
+            </div>
+
+            <div id="nav-links">
+                <ul>
+                    {% if "registration" not in request.path %}
+                    <li><a href="{% url 'accounts:registration' %}">Register</a></li>
+                    {% endif %}
+
+                    {% if "sign-in" not in request.path %}
+                    <li><a href="{% url 'accounts:signin' %}">Sign In</a></li>
+                    {% endif %}
+
+                    {% if request.user.is_admin %}
+                    <li><a href="{% url 'students:students_list' %}">Students</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <div id="dropdown-btn">
+                <div id="bar1"></div>
+                <div id="bar2"></div>
+            </div>
+        </nav>
+
+        <div id="dropdown-nav">
+            <ul>
+                {% if "registration" not in request.path %}
+                <li><a href="{% url 'accounts:registration' %}">Register</a></li>
+                {% endif %}
+
+                {% if "sign-in" not in request.path %}
+                <li><a href="{% url 'accounts:signin' %}">Sign In</a></li>
+                {% endif %}
+
+                {% if request.user.is_admin %}
+                <li><a href="{% url 'students:students_list' %}">Students</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </header>
+
+    {% block content %}
+    {% endblock content %}
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+    integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<!-- Noty.js -->
+<script src="https://cdn.jsdelivr.net/npm/noty/lib/noty.min.js"></script>
+
+<!-- Selectize.js -->
+<script src="https://cdn.jsdelivr.net/npm/selectize@0.12.6/dist/js/standalone/selectize.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('select').selectize({
+            sortField: 'text'
+        });
+    });
+</script>
+
+<script src="{% static 'core//scripts//utils.js' %}"></script>
+<script src="{% static 'core//scripts//base.js' %}"></script>
+{% block scripts %}
+{% endblock scripts %}
+
+</html>

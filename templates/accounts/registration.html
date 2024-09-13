@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'core//styles//form_card.css' %}">
+<link rel="stylesheet" href="{% static 'accounts//styles//auth_page.css' %}">
+
+<link rel="stylesheet" href="{% static 'accounts//styles//registration.css' %}">
+{% endblock styles %}
+
+
+{% block page_title %}Register{% endblock page_title %}
+
+
+{% block content %}
+<div class="container">
+    <main>
+        <section id="main-text">
+            <h1>NSCHE</h1>
+            <p>
+                Register to activate your voting profile.
+            </p>
+        </section>
+
+        <section id="form-wrapper">
+            <div class="form-card show-block">
+                <div class="form-header">
+                    <h2>Register</h2>
+                    <p>
+                        Let's verify your details and set up an account for you.
+                    </p>
+                </div>
+
+                <!-- Student Detail Verification Form Section -->
+                <form action="{% url 'accounts:student_detail_verification' %}" id="detail-verification-form">
+                    {% csrf_token %}
+
+                    <div class="form-fields">    
+                        <div class="form-field">
+                            <label for="email" hidden>Email Address</label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                class="form-input"
+                                placeholder="Email address" 
+                                autocomplete="email"
+                                required
+                                title="Enter your email address"
+                            >
+                            <small class="field-message"></small>
+                        </div>
+
+                        <div class="form-field"> 
+                            <label for="matriculation_number" hidden>Matriculation Number</label>
+                            <input 
+                                type="text" 
+                                id="matriculation_number" 
+                                name="matriculation_number" 
+                                class="form-input"
+                                placeholder="Matriculation Number" 
+                                autofocus
+                                required
+                                title="Enter your matriculation number"
+                                pattern="^[a-zA-Z]{3,4}\/\d{4,7}\/\d{4}$"
+                            >
+                            <small class="field-message"></small>
+                        </div>
+                    </div>
+
+                    <div class="submit-btn-wrapper">
+                        <button class="btn-primary submit-btn" type="submit">
+                            Verify
+                        </button>
+                    </div>
+
+                    <div class="form-footer">
+                        <small class="footer-item">
+                            Already registered?
+                            <a href="{% url 'accounts:signin' %}">Sign in</a>
+                        </small>
+                    </div>
+                </form>
+            </div>
+
+            <div class="form-card">
+                <div class="form-header">
+                    <h2>Enter OTP</h2>
+                    <p>
+                        Enter the one time password sent to your mail.
+                    </p>
+                </div>
+
+                <!-- OTP Verification Form Section -->
+                <form action="{% url 'accounts:otp_verification' %}" id="otp-verification-form">
+                    {% csrf_token %}
+
+                    <div class="form-fields">
+                        <div class="form-field">
+                            <label for="otp" hidden></label>
+                            <input 
+                                type="text" 
+                                id="otp" 
+                                name="otp" 
+                                class="form-input otp-input"
+                                autocomplete="on"
+                                required
+                                autofocus
+                                step="null"
+                                pattern="^[0-9]{4,}$"
+                            >
+                            <small class="field-message"></small>
+                        </div>
+                    </div>
+
+                    <div class="submit-btn-wrapper">
+                        <button class="btn-primary submit-btn" type="submit">
+                            Next
+                        </button>
+                    </div>
+
+                    <div class="form-footer">
+                        <small class="footer-item">
+                            Didn't receive OTP vai mail? Check your spam folder. If OTP isn't in spam, refresh this page and try again.
+                        </small>
+                    </div>
+                </form>
+            </div>
+
+            <div class="form-card">
+                <div class="form-header">
+                    <h2>Set a Password</h2>
+                    <p>
+                        Enter a password to complete your registration.
+                    </p>
+                </div>
+
+                <!-- Registration Completion Form -->
+                <form action="{% url 'accounts:registration_completion' %}" id="registration-completion-form">
+                    {% csrf_token %}
+
+                    <div class="form-fields">    
+                        <div class="form-field">
+                            <label for="password" hidden>Password</label>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                class="form-input" 
+                                placeholder="Password"
+                                minlength="8" 
+                                required
+                                autofocus
+                                title="Enter a password of at least 8 characters"
+                            >
+                            <small class="field-message"></small>
+                        </div>
+                        
+                        <div class="form-field">
+                            <label for="confirm_password" hidden>Confirm Password</label>
+                            <input 
+                                type="password" 
+                                id="confirm_password" 
+                                name="confirm_password" 
+                                class="form-input"
+                                placeholder="Confirm password" 
+                                minlength="8" 
+                                required
+                                title="Re-enter your password"
+                            >
+                            <small class="field-message"></small>
+                        </div>
+                    </div>
+
+                    <div class="submit-btn-wrapper">
+                        <button class="btn-primary submit-btn" type="submit">
+                            Register
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+    </main>
+</div>
+{% endblock content %}
+
+
+{% block scripts %}
+<script src="{% static 'core//scripts//formCard.js' %}"></script>
+<script src="{% static 'accounts//scripts//registration.js' %}"></script>
+{% endblock scripts %}
+
