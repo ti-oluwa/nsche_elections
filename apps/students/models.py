@@ -19,7 +19,7 @@ class Student(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=120)
     level = models.CharField(max_length=120, choices=AcademicLevel.choices)
-    department = models.CharField(max_length=120, default="Chemical Engineering")
+    department = models.CharField(max_length=120, default="Chemical Engineering", blank=True)
     matriculation_number = models.CharField(max_length=120, unique=True)
     email = models.EmailField(unique=True)
     account = models.OneToOneField(
@@ -31,10 +31,10 @@ class Student(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ["name", "email", "-added_at"]
+        ordering = ["name", "email", "-level", "-added_at"]
         verbose_name = _("Student")
         verbose_name_plural = _("Students")
         unique_together = ["email", "matriculation_number"]
 
     def __str__(self) -> str:
-        return self.name
+        return f"{self.name} ({self.matriculation_number})"

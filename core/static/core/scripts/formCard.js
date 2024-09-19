@@ -22,7 +22,7 @@ function formFieldHasError(formField, errorMsg) {
 
     const fieldInput = formField.querySelector('.form-input');
     if (!fieldInput) throw new Error('Field must have a form-input element');
-    
+
     msgEl.innerHTML = errorMsg;
 
     fieldInput.classList.add('invalid-field');
@@ -37,7 +37,7 @@ function formFieldHasError(formField, errorMsg) {
  * Clears the error messages from the form fields
  * @param {HTMLFormElement} form The form to clear the error messages from
  */
-function clearFieldErrors(form){
+function clearFieldErrors(form) {
     form.querySelectorAll('.form-input').forEach(input => {
         input.classList.remove('invalid-field');
     });
@@ -64,7 +64,7 @@ function isValidEmail(email) {
  * @param {Element} passwordInput2 The second password input field
  * @returns {boolean} true if the password is valid, false otherwise
  */
-function validatePassword(passwordInput1, passwordInput2) { 
+function validatePassword(passwordInput1, passwordInput2) {
     const specialChars = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?\s]+/;
     if (!specialChars.test(passwordInput1.value)) {
         formFieldHasError(passwordInput1.parentElement, 'Password must contain at least 1 special character');
@@ -85,7 +85,7 @@ function validatePassword(passwordInput1, passwordInput2) {
     if (passwordInput1.value !== passwordInput2.value) {
         formFieldHasError(passwordInput2.parentElement, 'Passwords do not match');
         return false;
-    } 
+    }
     return true;
 };
 
@@ -95,7 +95,7 @@ function validatePassword(passwordInput1, passwordInput2) {
  * @param {HTMLButtonElement} formCardButton The submit button of the form
  * @param {string} onClickText The text to display on the button when clicked until the response is received(when `onResponse` is called)
  */
-function addOnPostAndOnResponseFuncAttr(formCardButton, onClickText){
+function addOnPostAndOnResponseFuncAttr(formCardButton, onClickText) {
     let initialText = formCardButton.innerHTML;
     formCardButton.onPost = () => {
         formCardButton.disabled = true;
@@ -114,7 +114,7 @@ function addOnPostAndOnResponseFuncAttr(formCardButton, onClickText){
  * @param {HTMLFormElement} form The form card form to check
  * @returns {boolean} true if all required fields have values, false otherwise
  */
-function checkInputFields(form){
+function checkInputFields(form) {
     let isValid = true;
     form.querySelectorAll('.form-input').forEach(input => {
         if (input.required && !input.value && input.type !== 'hidden') {
@@ -130,6 +130,8 @@ formCards.forEach(formCard => {
     const formCardForm = formCard.querySelector('form');
     const formCardButton = formCardForm.querySelector('button[type="submit"]');
     const formCardButtonOnClickText = 'Processing...';
+    const closeButton = formCard.querySelector(".form-close-btn");
+    const formFiles = formCardForm.querySelectorAll('.form-file');
 
 
     // Define a default onPost and onResponse function for the form submit button
@@ -138,19 +140,42 @@ formCards.forEach(formCard => {
     formCardButton.disabled = true;
 
 
+    // If the form card is a modal, close the modal when the close button is clicked
+    if (closeButton && formCard.classList.contains("form-card-modal")) {
+        closeButton.addEventListener("click", () => {
+            formCard.classList.remove("show-block");
+            clearFieldErrors(formCardForm);
+            formCardForm.reset();
+        });
+    };
+
+    formFiles.forEach(fileInput => {
+        const fileInputLabel = fileInput.parentElement.querySelector("label");
+        const fileInputText = fileInput.nextElementSibling;
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                file = fileInput.files[0];
+                fileInputLabel.innerHTML = `${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+            } else {
+                fileInputLabel.innerHTML = 'Click to select file';
+            }
+        });
+    });
+
     formCardForm.addEventListener("keyup", (e) => {
-        if(!checkInputFields(formCardForm)){
+        if (!checkInputFields(formCardForm)) {
             formCardButton.disabled = true;
-        }else{
+        } else {
             formCardButton.disabled = false;
         }
     });
 
 
     formCardForm.addEventListener("change", (e) => {
-        if(!checkInputFields(formCardForm)){
+        if (!checkInputFields(formCardForm)) {
             formCardButton.disabled = true;
-        }else{
+        } else {
             formCardButton.disabled = false;
         }
     });

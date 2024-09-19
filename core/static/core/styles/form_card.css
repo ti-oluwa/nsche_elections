@@ -63,6 +63,23 @@
     line-height: 1.6;
 }
 
+.form-header > .form-close-btn{
+    align-self: flex-end;
+    padding: 4px 8px;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-close-btn:hover{
+    color: var(--jasper);
+    background: var(--parchment);
+}
+
 .form-card form{
     justify-self: stretch;
     display: flex;
@@ -71,6 +88,11 @@
     align-items: flex-start;
     gap: 16px 0;
     padding: 16px;
+    overflow-y: auto;
+}
+
+.form-card form::-webkit-scrollbar{
+    display: none;
 }
 
 form .form-fields{
@@ -124,6 +146,20 @@ form .form-fields{
     font-size: 14px;
     font-weight: 500;
     background: inherit !important;
+}
+
+.form-field .form-file{
+    display: none;
+}
+
+.form-field:has(.form-file) label{
+    width: 100%;
+    text-align: center;
+    background: var(--bluish-gray);
+    padding: 10px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-overflow: ellipsis;
 }
 
 form .submit-btn-wrapper{

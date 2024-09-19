@@ -8,7 +8,6 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib import messages
 
 from apps.students.models import Student
 from helpers.exceptions import capture
@@ -146,9 +145,9 @@ class StudentDetailVerificationView(generic.View):
                 status=400,
             )
 
-        # with transaction.atomic():
-        #     totp = generate_totp_for_identifier(student.id)
-        #     send_otp(totp.token(), recipient=student.email)
+        with transaction.atomic():
+            totp = generate_totp_for_identifier(student.id)
+            send_otp(totp.token(), recipient=student.email)
 
         return JsonResponse(
             data={
@@ -194,8 +193,8 @@ class OTPVerificationView(generic.View):
             )
         
         with transaction.atomic():
-            # is_valid = verify_identifier_totp_token(token=otp, identifier=student.id)
-            is_valid = dummy_verify_totp_token(token=otp, identifier=student.id)
+            is_valid = verify_identifier_totp_token(token=otp, identifier=student.id)
+            # is_valid = dummy_verify_totp_token(token=otp, identifier=student.id)
             if not is_valid:
                 return JsonResponse(
                     data={

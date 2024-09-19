@@ -31,4 +31,17 @@ class StudentForm(forms.ModelForm):
         matriculation_number: str = self.cleaned_data["matriculation_number"]
         validate_matriculation_number(matriculation_number)
         return matriculation_number.upper()
+    
+    def clean_email(self) -> str:
+        email: str = self.cleaned_data["email"]
+        return email.lower().strip()
+    
+    def clean_name(self) -> str:
+        name: str = self.cleaned_data["name"]
+        return name.title().strip()
+    
+    def clean_department(self) -> str:
+        department: str = self.cleaned_data["department"]
+        return department.strip().title()
+    
 

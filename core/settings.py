@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     "apps.accounts",
     "apps.tokens",
     "apps.students",
+    "apps.elections",
 ]
 
 MIDDLEWARE = [
@@ -94,7 +95,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTHENTICATION_BACKENDS = [
-    "apps.accounts.auth_backends.EmailMatriculationNumberBackend",
+    "apps.accounts.auth_backends.StudentUserAuthenticationBackend",
     "django.contrib.auth.backends.ModelBackend",
 ]
 

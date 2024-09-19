@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block styles %}
+<link rel="stylesheet" href="https://cdn.datatables.net/2.1.4/css/dataTables.dataTables.css" />
+
+<link rel="stylesheet" href="{% static 'core//styles//form_card.css' %}">
+<link rel="stylesheet" href="{% static 'students//styles//student_list.css' %}">
+{% endblock styles %}
+
+
+{% block page_title %}Students{% endblock page_title %}
+
+{% block content %}
+<div class="container">
+    <div class="form-card form-card-modal">
+        <div class="form-header">   
+            <div class="form-close-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: currentColor;">
+                    <path d="M9.172 16.242 12 13.414l2.828 2.828 1.414-1.414L13.414 12l2.828-2.828-1.414-1.414L12 10.586 9.172 7.758 7.758 9.172 10.586 12l-2.828 2.828z"></path>
+                    <path d="M12 22c5.514 0 10-4.486 10-10S17.514 2 12 2 2 6.486 2 12s4.486 10 10 10zm0-18c4.411 0 8 3.589 8 8s-3.589 8-8 8-8-3.589-8-8 3.589-8 8-8z"></path>
+                </svg>
+            </div>
+
+            <h2>Add a student</h2>
+            <p>
+                Enter the student's details below to add them to the existing record of students.
+            </p>
+        </div>
+
+        <!-- Student Add Form Section -->
+        <form action="{% url 'students:new_student' %}" id="student-add-form">
+            {% csrf_token %}
+            <div class="form-fields">
+                <div class="form-field"> 
+                    <label for="name" hidden>Full name</label>
+                    <input 
+                        type="name" 
+                        id="name" 
+                        name="name" 
+                        class="form-input"
+                        autofocus
+                        required
+                        placeholder="Full name"
+                        title="Enter student's full name"
+                    >
+                    <small class="field-message"></small>
+                </div>
+
+                <div class="form-field"> 
+                    <label for="email" hidden>Email Address</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        class="form-input"
+                        placeholder="Email address" 
+                        autofocus
+                        required
+                        title="Enter student's email address"
+                    >
+                    <small class="field-message"></small>
+                </div>
+
+                <div class="form-field"> 
+                    <label for="matriculation_number" hidden>Matriculation Number</label>
+                    <input 
+                        type="text" 
+                        id="matriculation_number" 
+                        name="matriculation_number" 
+                        class="form-input"
+                        placeholder="Matriculation Number" 
+                        autofocus
+                        required
+                        title="Enter student's matriculation number"
+                        pattern="^[a-zA-Z]{3,4}\/\d{4,7}\/\d{4}$"
+                    >
+                    <small class="field-message"></small>
+                </div>
+                
+                <div class="form-field"> 
+                    <label for="level" hidden>Level</label>
+                    <select 
+                        id="level" 
+                        name="level" 
+                        class="form-input form-select"
+                        autofocus
+                        required
+                        title="Select student's current level"
+                    >
+                    {% for name, value in academic_levels.items %}
+                        <option value="{{ value }}">{{ name }}</option>
+                    {% endfor %}
+                    </select>
+                    <small class="field-message"></small>
+                </div>
+            </div>
+
+            <div class="submit-btn-wrapper">
+                <button class="btn-primary submit-btn" type="submit">
+                    Add Student
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="form-card form-card-modal">
+        <div class="form-header">   
+            <div class="form-close-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: currentColor;">
+                    <path d="M9.172 16.242 12 13.414l2.828 2.828 1.414-1.414L13.414 12l2.828-2.828-1.414-1.414L12 10.586 9.172 7.758 7.758 9.172 10.586 12l-2.828 2.828z"></path>
+                    <path d="M12 22c5.514 0 10-4.486 10-10S17.514 2 12 2 2 6.486 2 12s4.486 10 10 10zm0-18c4.411 0 8 3.589 8 8s-3.589 8-8 8-8-3.589-8-8 3.589-8 8-8z"></path>
+                </svg>
+            </div>
+
+            <h2>Import Students</h2>
+            <p>
+                Import student details contained in a CSV file.
+            </p>
+        </div>
+
+        <!-- Student Import Form Section -->
+        <form action="{% url 'students:import_students' %}" enctype="multipart/form-data" id="students-import-form">
+            {% csrf_token %}
+            <div class="form-fields">
+                <div class="form-field"> 
+                    <label for="students_file">Click to upload file</label>
+                    <input 
+                        type="file" 
+                        id="students_file" 
+                        name="students_file" 
+                        class="form-input form-file"
+                        autofocus
+                        required
+                        title="Upload student details file"
+                        accept=".csv"
+                    >
+                    <small class="field-message"></small>
+                </div>
+            </div>
+
+            <div class="submit-btn-wrapper">
+                <button class="btn-secondary submit-btn" type="submit" style="font-weight: 600;">
+                    Import
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <main class="page-content">
+        <section class="page-head">
+            <h1>
+                All Students
+            </h1>
+
+            <div class="page-head-btns">
+                <button class="btn btn-primary" id="add-student-btn">
+                    Add Student
+                </button>
+
+                <button class="btn btn-secondary" id="import-students-btn" style="font-weight: 600;">
+                    Import Students
+                </button>
+            </div>
+        </section>
+
+        <!-- Students List Section -->
+        <div class="page-body">
+            <table id="student-list-table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Matriculation Number</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Department</th>
+                        <th>Level</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ student.matriculation_number }}</td>
+                        <td>{{ student.name | title }}</td>
+                        <td>{{ student.email | lower }}</td>
+                        <td>{{ student.department | title }}</td>
+                        <td>{{ student.level }}</td>
+                        <td>
+                            <a 
+                                href="{% url 'students:delete_student' student.id %}" 
+                                style="color: red; display: flex; align-items: center; justify-content: center;"
+                                title="Delete {{ student }}"
+                                class="no-sort student-delete-btn"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: currentColor;">
+                                    <path d="M5 20a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8h2V6h-4V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H3v2h2zM9 4h6v2H9zM8 8h9v12H7V8z"></path>
+                                    <path d="M9 10h2v8H9zm4 0h2v8h-2z"></path>
+                                </svg>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script src="https://cdn.datatables.net/2.1.4/js/dataTables.js"></script>
+<script>
+    $(document).ready(function() {
+        // Render the tables as DataTables
+        $('table').DataTable({
+            searchable: true,
+            sortable: true,
+            scrollX: true,
+            paging: true,
+            info: true,
+            pageLength: 100,
+            lengthMenu: [30, 50, 100, 200, 500],
+            columnDefs: [{ targets: 'no-sort', orderable: false }]
+        });
+
+        // Add confirmation dialog to student delete buttons
+        $('.student-delete-btn').on('click', function(e) {
+            e.preventDefault();
+            let url = $(this).attr('href');
+            let confirmDelete = confirm(`Are you sure you want to delete this student?`);
+
+            if (confirmDelete) {
+                window.location.href = url;
+            }
+        });
+    });
+</script>
+
+<script src="{% static 'core//scripts//formCard.js' %}"></script>
+<script src="{% static 'students//scripts//studentAdd.js' %}"></script>
+<script src="{% static 'students//scripts//studentsImport.js' %}"></script>
+{% endblock scripts %}
