@@ -48,15 +48,14 @@ function clearFieldErrors(form) {
 
 
 /**
- * Checks if the email is valid 
- * @param {string} email The email to validate
- * @returns {boolean} true if the email is valid, false otherwise
- */
+* Checks if the email is valid
+* @param {string} email The email to validate
+* @returns {boolean} true if the email is valid, false otherwise
+*/
 function isValidEmail(email) {
-    const emailRegex = /^[a-zA-Z0-9_.]+@[a-zA-Z0-9\._]+\.[a-z]{2,}$/;
-    return emailRegex.test(email);
-};
-
+   const emailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$/;
+   return emailRegex.test(email);
+}
 
 /**
  * Checks if the password is valid and sets custom validity message if not

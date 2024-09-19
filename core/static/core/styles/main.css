@@ -5,6 +5,7 @@
 :root{
     --bluish-gray: #d5dce5;
     --light-gray: #f2f2f2;
+    --text-light: #e2e2e2;
     --dark-gray: #373b3f;
     --white: #fff;
     --text-dark: #2f2f2f;
@@ -26,7 +27,7 @@
 .container{
     margin: 0 auto;
     width: 90%;
-    max-width: 1200px;
+    max-width: 1440px;
 }
 
 .stop_scroll{

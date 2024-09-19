@@ -1,4 +1,11 @@
 
+body {
+    background: url("../images/chem3.jpg");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
 main{
     margin: 0 auto;
     width: 100%;
@@ -29,7 +36,7 @@ main > #main-text{
     font-size: clamp(18px, 2vw, 24px);
     font-weight: 600;
     line-height: 1.6;
-    color: var(--dark-gray);
+    color: var(--text-light);
 }
 
 

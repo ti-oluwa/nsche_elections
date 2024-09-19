@@ -1,5 +1,6 @@
 from django import forms
 from django.conf import settings
+from timezone_field.forms import TimeZoneFormField
 
 from apps.students.forms import validate_matriculation_number
 
@@ -72,6 +73,7 @@ class RegistrationCompletionForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput, required=True, validators=[validate_password])
     confirm_password = forms.CharField(widget=forms.PasswordInput, required=True)
     password_set_token = forms.CharField(required=True, widget=forms.HiddenInput)
+    timezone = TimeZoneFormField(required=False)
 
     def clean(self):
         cleaned_data = super().clean()

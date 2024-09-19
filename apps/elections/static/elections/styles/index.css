@@ -1,0 +1,36 @@
+
+.page-head h1 > p{
+    text-wrap: wrap;
+    color: var(--parchment);
+    font-size: clamp(1.2rem, 1.5vw, 1.6rem);
+}
+
+.page-content .page-body {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 40px clamp(16px, 2.5vw, 24px);
+    border-radius: 10px;
+}
+
+.page-body h3{
+    color: var(--jasper);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    font-family: "Raleway";
+    line-height: 1.6;
+}
+
+ul.guidelines {
+    background: transparent;
+    color: var(--text-light);
+    display: flex;
+    flex-direction: column;
+    gap: 10px 0;
+}
+
+ul.guidelines li{
+    list-style: none;
+    font-size: clamp(0.8rem, 2vw, 1rem);
+    font-weight: 400;
+    color: #e0e0e0;
+}

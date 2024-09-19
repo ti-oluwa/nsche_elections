@@ -1,46 +1,5 @@
 
-.page-content{
-    margin-block: 40px;
-    display: flex;
-    flex-direction: column;
-    gap: 30px 0;
-}
-
-.page-content .page-head{
-    margin-block: 10px;
-    display: flex;
-    width: 100%;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px 40px;
-    flex-wrap: wrap;
-}
-
-.page-content .page-head h1{
-    font-size: clamp(1.5rem, 2vw, 1.8rem);
-    font-weight: 600;
-    margin-block: 0;
-    flex-shrink: 0;
-}
-
-.page-head .page-head-btns{
-    display: flex;
-    gap: 10px;
-}
-
-.page-head-btns .btn{
-    padding: 8px 12px !important;
-    font-size: 0.9rem !important;
-}
-
-.page-content .page-body{
-    padding: 20px 14px;
-    background: var(--light-gray);
-    border-radius: 4px;
-    /* overflow-x: auto; */
-}
-
-.page-body #student-list-table{
+#student-list-table{
     width: 100%;
     border-collapse: collapse;
     /* overflow-x: auto; */

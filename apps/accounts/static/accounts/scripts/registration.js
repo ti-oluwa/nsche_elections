@@ -38,7 +38,8 @@ function showRegistrationCompletionForm(completionData) {
         for (const [key, value] of formData.entries()) {
             payload[key] = value;
         }
-    
+        payload["timezone"] = getClientTimezone();
+        
         registrationCompletionButton.onPost();
     
         const options = {

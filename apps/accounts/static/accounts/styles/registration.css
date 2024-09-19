@@ -3,4 +3,10 @@
     display: none;
 }
 
+body {
+    background: url("../images/chem5.jpg");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
 

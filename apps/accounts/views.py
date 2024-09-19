@@ -37,7 +37,7 @@ class SignInView(generic.TemplateView):
     template_name = "accounts/signin.html"
     form_class = SignInForm
     
-    # @redirect_authenticated("dashboard:dashboard")
+    @redirect_authenticated("elections:index")
     def get(self, request, *args: str, **kwargs):
         return super().get(request, *args, **kwargs)
 
@@ -75,7 +75,7 @@ class SignInView(generic.TemplateView):
                 data={
                     "status": "success",
                     "detail": f"Hello {user_account.name}!",
-                    "redirect_url": next_url,
+                    "redirect_url": next_url or reverse("elections:index"),
                 },
                 status=200
             )
@@ -99,6 +99,8 @@ class SignOutView(LoginRequiredMixin, generic.View):
         return redirect("accounts:signin")
 
 
+
+@redirect_authenticated("elections:index")
 class RegistrationView(generic.TemplateView):
     template_name = "accounts/registration.html"
 
@@ -247,6 +249,7 @@ class RegistrationCompletionView(generic.CreateView):
         form_data = form.cleaned_data.copy()
         password = form_data.get("password")
         password_set_token = form_data.pop("password_set_token")
+        timezone = form_data.pop("timezone", None)
         
         with transaction.atomic():
             with capture.capture(
@@ -261,6 +264,10 @@ class RegistrationCompletionView(generic.CreateView):
             account = create_account_for_student(
                 student.email, student.name, password=password
             )
+
+            if timezone:
+                account.timezone = timezone
+                account.save()
             student.account = account
             student.save()
 

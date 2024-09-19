@@ -5,5 +5,3 @@ class ElectionsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'apps.elections'
 
-    def ready(self):
-        import apps.elections.signals # noqa

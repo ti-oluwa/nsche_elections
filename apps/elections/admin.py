@@ -1,61 +1,124 @@
 from django.contrib import admin
-from django.http import HttpRequest
-
-from .models import ElectionConfig
-from .forms import ElectionConfigForm
+from .models import Election, Office, Candidate
 
 
-@admin.register(ElectionConfig)
-class ElectionConfigAdmin(admin.ModelAdmin):
+@admin.register(Election)
+class ElectionAdmin(admin.ModelAdmin):
     list_display = (
-        "election_starts",
-        "election_ends",
-        "election_ongoing",
-        "election_upcoming",
-        "election_ended",
+        "name",
+        "start_date",
+        "end_date",
+        "is_ongoing",
+        "is_upcoming",
+        "has_ended",
     )
-    list_filter = ("election_starts", "election_ends")
-    search_fields = ("election_starts", "election_ends")
-    date_hierarchy = "election_starts"
-    ordering = ("election_starts",)
-    fields = (
-        "election_starts",
-        "election_ends",
-    )
+    list_filter = ("start_date", "end_date")
+    search_fields = ("name",)
+    date_hierarchy = "start_date"
+    ordering = ("-start_date", "name")
+    fields = ("name", "start_date", "end_date")
     actions = None
     save_on_top = True
     save_as = True
-    list_per_page = 10
-    list_max_show_all = 100
-    list_editable = ()
-    list_display_links = ()
-    list_select_related = False
-    list_display_links = ()
-    form = ElectionConfigForm
+    list_per_page = 20
 
     def has_add_permission(self, request):
-        return False
+        # Only allow superusers or staff to add elections
+        return request.user.is_superuser or request.user.is_staff
 
     def has_delete_permission(self, request, obj=None):
+        # Prevent deletion of elections
         return False
 
-    def has_module_permission(self, request: HttpRequest) -> bool:
-        return request.user.is_admin
-    
+    def has_change_permission(self, request, obj=None):
+        # Only allow superusers to change ongoing or ended elections
+        if obj and (obj.is_ongoing or obj.has_ended):
+            return request.user.is_superuser
+        return True
 
-    def get_election_ongoing(self, obj: ElectionConfig):
-        return obj.election_ongoing
+    def is_ongoing(self, obj):
+        return obj.is_ongoing
 
-    def get_election_upcoming(self, obj: ElectionConfig):
-        return obj.election_upcoming
+    is_ongoing.boolean = True
+    is_ongoing.short_description = "Ongoing"
 
-    def get_election_ended(self, obj: ElectionConfig):
-        return obj.election_ended
+    def is_upcoming(self, obj):
+        return obj.is_upcoming
 
-    get_election_ongoing.boolean = True
-    get_election_upcoming.boolean = True
-    get_election_ended.boolean = True
+    is_upcoming.boolean = True
+    is_upcoming.short_description = "Upcoming"
 
-    get_election_ongoing.short_description = "Election Ongoing"
-    get_election_upcoming.short_description = "Election Upcoming"
-    get_election_ended.short_description = "Election Ended"
+    def has_ended(self, obj):
+        return obj.has_ended
+
+    has_ended.boolean = True
+    has_ended.short_description = "Ended"
+
+
+@admin.register(Office)
+class OfficeAdmin(admin.ModelAdmin):
+    list_display = ("name", "election", "is_active", "leading_candidate")
+    list_filter = ("election__name", "is_active")
+    search_fields = ("name", "election__name")
+    ordering = ("name",)
+    fields = ("name", "description", "election", "is_active")
+    actions = None
+    save_on_top = True
+    save_as = True
+
+    def has_add_permission(self, request):
+        # Only allow superusers to add new offices
+        return request.user.is_superuser
+
+    def has_change_permission(self, request, obj=None):
+        # Restrict changes to ongoing or ended elections
+        if obj and (obj.election.is_ongoing or obj.election.has_ended):
+            return request.user.is_superuser
+        return True
+
+    def has_delete_permission(self, request, obj=None):
+        # Prevent deletion of offices once they are part of ongoing or ended elections
+        if obj and (obj.election.is_ongoing or obj.election.has_ended):
+            return False
+        return request.user.is_superuser
+
+    def leading_candidate(self, obj):
+        return obj.leading_candidate or "--"
+
+    leading_candidate.short_description = "Leading Candidate"
+
+
+@admin.register(Candidate)
+class CandidateAdmin(admin.ModelAdmin):
+    list_display = ("name", "office", "disqualified", "votes_count")
+    list_filter = ("office__name", "disqualified")
+    search_fields = ("name", "office__name")
+    ordering = ("name",)
+    fields = ("name", "office", "manifesto", "disqualified")
+    actions = None
+    save_on_top = True
+    save_as = True
+
+    def has_add_permission(self, request):
+        # Only allow superusers or election managers to add candidates
+        return (
+            request.user.is_superuser
+            or request.user.groups.filter(name="Election Managers").exists()
+        )
+
+    def has_change_permission(self, request, obj=None):
+        # Prevent changes to candidates in ongoing or ended elections unless by superuser
+        if obj and (obj.office.election.is_ongoing or obj.office.election.has_ended):
+            return request.user.is_superuser
+        return True
+
+    def has_delete_permission(self, request, obj=None):
+        # Prevent deletion of candidates in ongoing or ended elections
+        if obj and (obj.office.election.is_ongoing or obj.office.election.has_ended):
+            return False
+        return request.user.is_superuser
+
+    def votes_count(self, obj):
+        return obj.votes_count
+
+    votes_count.short_description = "Valid Votes"

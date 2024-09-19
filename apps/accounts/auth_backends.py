@@ -1,5 +1,6 @@
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth import get_user_model
+from django.utils.itercompat import is_iterable
 from apps.students.models import Student
 
 
@@ -17,6 +18,7 @@ class StudentUserAuthenticationBackend(ModelBackend):
         email = self.get_email(credentials)
         matriculation_number = self.get_matriculation_number(credentials)
         password = credentials.get("password", None)
+
         if not email or not password:
             return None
 
@@ -27,7 +29,8 @@ class StudentUserAuthenticationBackend(ModelBackend):
     def get_email(self, credentials):
         """Get the email from the credentials."""
         email_credentials = type(self).email_credentials
-        if not isinstance(email_credentials, list):
+
+        if not is_iterable(email_credentials):
             email_credentials = [email_credentials]
 
         for credential_name in email_credentials:
@@ -39,7 +42,8 @@ class StudentUserAuthenticationBackend(ModelBackend):
     def get_matriculation_number(self, credentials):
         """Get the matriculation number from the credentials."""
         matriculation_number_credentials = type(self).matriculation_number_credentials
-        if not isinstance(matriculation_number_credentials, list):
+
+        if not is_iterable(matriculation_number_credentials):
             matriculation_number_credentials = [matriculation_number_credentials]
 
         for credential_name in matriculation_number_credentials:
@@ -59,6 +63,7 @@ class StudentUserAuthenticationBackend(ModelBackend):
             account = student.account
             if account and account.check_password(password):
                 return account
+        
         except Student.DoesNotExist:
             return None
         return None

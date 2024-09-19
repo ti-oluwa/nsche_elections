@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'elections//styles//index.css' %}">
+{% endblock styles %}
+
+{% block page_title %}Home{% endblock page_title %}
+
+
+{% block content %}
+<div class="container">
+    <main class="page-content">
+        <section class="page-head">
+            <h1>
+                Hello {{ request.user.name }}!
+                <p>Welcome to the {{ app_alias }} e-voting platform.</p>
+            </h1>
+
+            <div class="page-head-btns">
+                <button class="btn btn-primary" id="add-student-btn">
+                    See Upcoming Elections
+                </button>
+
+                <button class="btn btn-secondary" id="import-students-btn" style="font-weight: 600;">
+                    View Past Elections
+                </button>
+            </div>
+        </section>
+
+        <div class="page-body">
+            <h3>Please note the following </h3>
+
+            <ul class="guidelines">
+                <li>Only registered students are eligible to vote on the e-voting platform.</li>
+                <li>Candidates must meet academic and character requirements set by the institution.</li>
+                <li>Campaigning must follow school rules and guidelines.</li>
+                <li>No campaigning is allowed on the e-voting day.</li>
+                <li>Voting will conducted electronically through this secure platform.</li>
+                <li>Each student is allowed to vote only once on the platform.</li>
+                <li>Election materials, including digital content, must adhere to approved formats.</li>
+                <li>Vote tallying is automated, with real-time tracking and transparency.</li>
+                <li>Election disputes must be reported promptly through the official complaint channel.</li>
+                <li>Any misconduct or manipulation of the platform leads to disqualification or penalties.</li>
+            </ul>
+        </div>
+    </main>
+</div>
+{% endblock %}

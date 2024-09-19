@@ -13,7 +13,7 @@ def get_student(email: str, matriculation_number: str) -> typing.Optional[Studen
     :return: Student object if it exists, else None
     """
     return Student.objects.filter(
-        email=email, matriculation_number__iexact=matriculation_number
+        email__iexact=email, matriculation_number__iexact=matriculation_number
     ).first()
 
 

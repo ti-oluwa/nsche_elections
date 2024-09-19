@@ -1,42 +1,46 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-
 from django.utils import timezone
 
 
-class ElectionConfig(models.Model):
+class Election(models.Model):
     """Model for election configuration."""
 
-    election_starts = models.DateTimeField(
-        blank=True,
-        null=True,
-        help_text=_("When is the next election scheduled to start?"),
+    name = models.CharField(max_length=255)
+    start_date = models.DateTimeField(
+        help_text=_("When the election starts."),
     )
-    election_ends = models.DateTimeField(blank=True, null=True)
+    end_date = models.DateTimeField(
+        help_text=_("When the election ends."),   
+    )
+
+    class Meta:
+        verbose_name_plural = _("Elections")
+        ordering = ["-start_date", "name", "end_date"]
 
     def __str__(self):
-        return "Election Configuration"
+        name = self.name.strip().lower()
+        suffix = "ongoing" if self.is_ongoing else "upcoming" if self.is_upcoming else "ended"
+
+        if not name.endswith("election"):
+            name += " election"
+        return f"{name} ({suffix})".title()
 
     @property
-    def election_ongoing(self):
-        """Check if an election is currently ongoing."""
-        if self.election_starts is None or self.election_ends is None:
-            return False
-        return self.election_starts <= timezone.now() <= self.election_ends
+    def is_ongoing(self):
+        """Check if the election is currently ongoing."""
+        return self.start_date <= timezone.now() <= self.end_date
 
     @property
-    def election_upcoming(self):
-        """Check if an election is upcoming."""
-        if self.election_starts is None:
-            return False
-        return timezone.now() < self.election_starts
+    def is_upcoming(self):
+        """Check if the election is still upcoming."""
+        return timezone.now() < self.start_date
 
     @property
-    def election_ended(self):
-        """Check if an election has ended."""
-        if self.election_ends is None:
-            return False
-        return timezone.now() > self.election_ends
+    def has_ended(self):
+        """Check if the election has ended."""
+        return timezone.now() > self.end_date
+
 
 
 class Office(models.Model):
@@ -46,6 +50,14 @@ class Office(models.Model):
     description = models.TextField(
         blank=True, null=True, help_text=_("Description of the office.")
     )
+    election = models.ForeignKey(
+        Election,
+        on_delete=models.CASCADE,
+        help_text=_("Election the office is being contested in."),
+        related_name="offices",
+        null=True,
+        db_index=True,
+    )
     is_active = models.BooleanField(default=True, help_text=_("Is the office active?"))
 
     class Meta:
@@ -53,7 +65,7 @@ class Office(models.Model):
         ordering = ("name",)
 
     def __str__(self):
-        return self.name
+        return f"{self.name} ({self.election})"
 
     @property
     def leading_candidate(self):
