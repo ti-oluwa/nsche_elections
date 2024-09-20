@@ -72,7 +72,7 @@
                             <form action="{% url 'elections:vote' election.slug office.pk %}" class="voting-form">
                                 {% csrf_token %}
                                 <div class="form-fields">
-                                    {% for candidate in office.candidates.all %}
+                                    {% for candidate in office.candidates.qualified %}
                                     <div class="form-field"> 
                                         <label for="{{ candidate.pk }}">{{ candidate.name }}</label>
                                         <input 
@@ -86,13 +86,13 @@
                                         <small class="field-message"></small>
                                     </div>
                                     {% endfor %}
-                                    
+
                                     <div class="form-field"> 
-                                        <label for="nil">Nil</label>
+                                        <label for="nil-{{ forloop.counter }}">Nil</label>
                                         <input 
                                             type="radio" 
-                                            id="nil"
-                                            value="nil" 
+                                            id="nil-{{ forloop.counter }}"
+                                            value="nil"
                                             name="candidate"
                                             class="form-input"
                                             title="Vote for no candidate"
