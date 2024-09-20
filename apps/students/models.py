@@ -11,6 +11,8 @@ class AcademicLevel(models.TextChoices):
     _300_LEVEL = "300", _("300 Level")
     _400_LEVEL = "400", _("400 Level")
     _500_LEVEL = "500", _("500 Level")
+    _600_LEVEL = "600", _("600 Level")
+    _700_LEVEL = "700", _("700 Level")
 
 
 class Student(models.Model):

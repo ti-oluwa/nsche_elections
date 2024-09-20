@@ -204,7 +204,7 @@ class OTPVerificationView(generic.View):
                 data={
                     "student_id": str(student.id),
                 },
-                expires_after=60 * 5,
+                expires_after=60 * 15,
             )
         return JsonResponse(
             data={
