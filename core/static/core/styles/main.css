@@ -30,7 +30,7 @@
     max-width: 1440px;
 }
 
-.stop_scroll{
+.stop-scroll{
     height: 100%;
     overflow: hidden !important;
 }

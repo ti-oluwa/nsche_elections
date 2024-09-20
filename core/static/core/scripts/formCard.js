@@ -143,6 +143,7 @@ formCards.forEach(formCard => {
     if (closeButton && formCard.classList.contains("form-card-modal")) {
         closeButton.addEventListener("click", () => {
             formCard.classList.remove("show-block");
+            document.body.classList.remove("stop-scroll");
             clearFieldErrors(formCardForm);
             formCardForm.reset();
         });

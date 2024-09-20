@@ -14,6 +14,9 @@ studentAddFormToggleButton.addEventListener("click", () => {
     });
     
     studentAddFormCard.classList.toggle("show-block");
+    if (studentAddFormCard.classList.contains("show-block")) {
+        document.body.classList.add("stop-scroll");
+    }
 });
 
 
