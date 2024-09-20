@@ -1,4 +1,6 @@
+import re
 from django.contrib import admin
+from django.http import HttpRequest
 
 from .models import UserAccount
 
@@ -13,3 +15,6 @@ class UserAccountModelAdmin(admin.ModelAdmin):
             obj.set_password(form.cleaned_data["password"])
         obj.save()
         return None
+
+    def has_module_permission(self, request: HttpRequest) -> bool:
+        return request.user.is_superuser
