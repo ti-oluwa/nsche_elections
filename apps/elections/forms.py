@@ -90,7 +90,7 @@ class VoteForm(forms.ModelForm):
 
         if Vote.objects.filter(candidate=candidate, voter=voter).exists():
             raise forms.ValidationError(
-                _(f"You have already registered a vote for {candidate.name}.")
+                _(f"You have already registered a vote for {candidate.name.title()}.")
             )
 
         return cleaned_data

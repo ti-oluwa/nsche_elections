@@ -7,7 +7,7 @@ from django.views import generic
 from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import Election, Office, VoteLock, Vote
+from .models import Candidate, Election, Office, VoteLock, Vote
 from .forms import VoteForm
 from helpers.exceptions import capture
 
@@ -91,7 +91,7 @@ class VoteRegistrationView(LoginRequiredMixin, generic.View):
                 return JsonResponse(
                     data={
                         "status": "success",
-                        "detail": f"You successfully un-voted for {office.name}!",
+                        "detail": f"You successfully un-voted for {office.name.upper()}!",
                     },
                     status=200,
                 )
@@ -105,7 +105,7 @@ class VoteRegistrationView(LoginRequiredMixin, generic.View):
                 status=200,
             )
 
-        candidate = get_object_or_404(office.candidates, pk=candidate_pk)
+        candidate: Candidate = get_object_or_404(office.candidates, pk=candidate_pk)
         form = self.form_class(data={"candidate": candidate, "voter": voter})
 
         if not form.is_valid():
@@ -122,7 +122,7 @@ class VoteRegistrationView(LoginRequiredMixin, generic.View):
         return JsonResponse(
             data={
                 "status": "success",
-                "detail": f"You voted {candidate.name} for {office.name}!",
+                "detail": f"You voted {candidate.name.title()} for {office.name.upper()}!",
             },
             status=200,
         )
