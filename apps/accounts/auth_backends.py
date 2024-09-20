@@ -24,7 +24,7 @@ class StudentUserAuthenticationBackend(ModelBackend):
 
         if matriculation_number:
             return self.authenticate_student(email, matriculation_number, password)
-        return self.authenticate_user(request, **credentials)
+        return self.authenticate_user(**credentials)
 
     def get_email(self, credentials):
         """Get the email from the credentials."""
@@ -72,7 +72,7 @@ class StudentUserAuthenticationBackend(ModelBackend):
         """Authenticate regular users by email."""
         email = self.get_email(credentials)
         password = credentials.get("password", None)
-        
+
         try:
             user = UserModel.objects.get(email=email)
             if user.check_password(password):
