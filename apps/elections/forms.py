@@ -2,7 +2,7 @@ from django import forms
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from .models import Election, Office, Candidate, Vote
+from .models import Election, Office, Candidate, Vote, VoteLock
 
 
 class ElectionForm(forms.ModelForm):
@@ -23,7 +23,7 @@ class ElectionForm(forms.ModelForm):
                     _("The start date must be earlier than the end date.")
                 )
 
-            if start_date < timezone.now():
+            if not self.instance and start_date < timezone.now():
                 raise forms.ValidationError(_("The start date cannot be in the past."))
 
         return cleaned_data
@@ -69,11 +69,21 @@ class VoteForm(forms.ModelForm):
     class Meta:
         model = Vote
         fields = ["candidate", "voter"]
-    
+
     def clean(self):
         cleaned_data = super().clean()
         candidate: Candidate = cleaned_data.get("candidate")
         voter = cleaned_data.get("voter")
+        election = candidate.office.election
+
+        if VoteLock.objects.filter(
+            election=election, voter=voter
+        ).exists():
+            raise forms.ValidationError(
+                _(
+                    f"You cannot vote. You have already locked in your vote for {election}."
+                )
+            )
 
         if candidate.office.election.has_ended:
             raise forms.ValidationError(_("You cannot vote in an ended election."))
@@ -84,7 +94,7 @@ class VoteForm(forms.ModelForm):
             )
 
         return cleaned_data
-    
+
     def save(self, commit: bool = True):
         candidate = self.cleaned_data["candidate"]
         voter = self.cleaned_data["voter"]

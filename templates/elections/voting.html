@@ -20,9 +20,35 @@
 
             {% if election.is_ongoing %}
             <div class="page-head-btns">
+                {% if vote_locked %}
+                    <button class="btn btn-primary" style="display: flex; align-items: center; gap: 5px;" disabled>
+                        Votes locked in
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: currentColor;">
+                            <path d="M17 8V7c0-2.757-2.243-5-5-5S7 4.243 7 7v3H6c-1.103 0-2 .897-2 2v8c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2v-8c0-1.103-.897-2-2-2H9V7c0-1.654 1.346-3 3-3s3 1.346 3 3v1h2zm1 4 .002 8H6v-8h12z"></path>
+                        </svg>
+                    </button>
+                {% else %}
+                <a href="{% url 'elections:vote_lock_in' election.slug %}" id="vote-lock-btn">
+                    <button class="btn btn-primary" style="display: flex; align-items: center; gap: 5px;">
+                        Lock in votes
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: currentColor;">
+                            <path d="M17 8V7c0-2.757-2.243-5-5-5S7 4.243 7 7v3H6c-1.103 0-2 .897-2 2v8c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2v-8c0-1.103-.897-2-2-2H9V7c0-1.654 1.346-3 3-3s3 1.346 3 3v1h2zm1 4 .002 8H6v-8h12z"></path>
+                        </svg>
+                    </button>
+                </a>
+                {% endif %}
+
                 <button class="btn btn-secondary" disabled>
                     Voting ends in {{ election.end_date|timeuntil }}
                 </button>
+            </div>
+            {% else %}
+            <div class="page-head-btns">
+                <a href="{% url 'elections:election_detail' election.slug %}">
+                    <button class="btn btn-primary">
+                        View results
+                    </button>
+                </a>
             </div>
             {% endif %}
         </section>
@@ -63,7 +89,12 @@
                                 </div>
             
                                 <div class="submit-btn-wrapper">
-                                    <button class="btn-primary submit-btn" type="submit">
+                                    <button 
+                                        class="btn-primary submit-btn" type="submit"
+                                        {% if vote_locked %}
+                                        style="pointer-events: none !important; cursor: not-allowed !important;"
+                                        {% endif %}
+                                    >
                                         Vote
                                     </button>
                                 </div>
@@ -81,4 +112,16 @@
 {% block scripts %}
 <script src="{% static 'core//scripts//formCard.js' %}"></script>
 <script src="{% static 'elections//scripts//voting.js' %}"></script>
+
+<script>
+    $(document).ready(function() {
+        $("#vote-lock-btn").click(function(e) {
+            e.preventDefault();
+
+            if (confirm("Are you sure you want to lock in your votes? Ensure you have voted for all offices.")) {
+                window.location.href = $(this).attr("href");
+            }
+        });
+    });
+</script>
 {% endblock scripts %}

@@ -1,5 +1,4 @@
 import uuid
-from xml.dom.domreg import registered
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone, text
@@ -162,3 +161,32 @@ class Vote(models.Model):
 
     def __str__(self):
         return f"{self.voter} voted for {self.candidate}"
+
+
+class VoteLock(models.Model):
+    """Model for election vote locks."""
+
+    election = models.ForeignKey(
+        Election,
+        on_delete=models.CASCADE,
+        help_text=_("Election the vote lock is for."),
+        related_name="vote_locks",
+        db_index=True,
+    )
+    voter = models.ForeignKey(
+        "accounts.UserAccount",
+        on_delete=models.CASCADE,
+        help_text=_("Voter that is locked."),
+        related_name="+",
+    )
+
+    locked_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name_plural = _("Vote Locks")
+        # Ensures a voter can only be locked once for an election
+        unique_together = ("election", "voter")
+
+    def __str__(self):
+        return f"{self.voter} locked in votes for {self.election}"

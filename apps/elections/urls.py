@@ -16,4 +16,9 @@ urlpatterns = [
         views.vote_registration_view,
         name="vote",
     ),
+    path(
+        "elections/<slug:slug>/lock-in-vote/",
+        views.vote_lock_in_view,
+        name="vote_lock_in",
+    ),
 ]

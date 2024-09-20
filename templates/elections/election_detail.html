@@ -25,11 +25,9 @@
                     </button>
                 </a>
                 {% elif election.has_ended %}
-                <a href="">
-                    <button class="btn btn-secondary" style="font-weight: 600;">
-                        View Results
-                    </button>
-                </a>
+                <button class="btn btn-secondary" style="font-weight: 600;" disabled>
+                    Voting has ended
+                </button>
                 {% elif election.is_upcoming %}
                 <button class="btn btn-primary" disabled>
                     Proceed to vote
