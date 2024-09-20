@@ -1,6 +1,7 @@
 import typing
 import json
 import os
+from django.db import transaction
 from django.views import generic
 from django.http import JsonResponse
 from django.urls import reverse
@@ -124,7 +125,11 @@ class StudentDeleteView(
 
     def get(self, request, *args, **kwargs):
         student = self.get_object()
-        student.delete()
+        
+        with transaction.atomic():
+            student.delete()
+            if student.account:
+                student.account.delete()
         return redirect(self.get_success_url())
 
     def get_success_url(self) -> str:

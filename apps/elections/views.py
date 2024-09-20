@@ -2,11 +2,12 @@ import json
 import typing
 from django.db import models
 from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
 from django.views import generic
 from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import Election, Office, VoteLock
+from .models import Election, Office, VoteLock, Vote
 from .forms import VoteForm
 from helpers.exceptions import capture
 
@@ -14,10 +15,11 @@ from helpers.exceptions import capture
 election_qs = Election.objects.prefetch_related("offices__candidates").all()
 
 
-class IndexView(LoginRequiredMixin, generic.TemplateView):
+class IndexView(LoginRequiredMixin, generic.RedirectView):
     """View for the index page."""
 
-    template_name = "elections/index.html"
+    def get_redirect_url(self, *args, **kwargs) -> str:
+        return reverse("elections:election_list")
 
 
 class ElectionListView(LoginRequiredMixin, generic.ListView):
@@ -79,7 +81,31 @@ class VoteRegistrationView(LoginRequiredMixin, generic.View):
         data: typing.Dict = json.loads(request.body)
         voter = self.request.user
         office = self.get_object()
-        candidate = get_object_or_404(office.candidates, pk=data["candidate"])
+        candidate_pk: str = data.get("candidate")
+
+        if candidate_pk.lower() in ["null", "undefined", "nil", "none"]:
+            # If the user has already voted, remove the vote for the office
+            votes = Vote.objects.filter(voter=voter, candidate__office=office)
+            if votes.exists():
+                votes.delete()
+                return JsonResponse(
+                    data={
+                        "status": "success",
+                        "detail": f"You successfully un-voted for {office.name}!",
+                    },
+                    status=200,
+                )
+            
+            # If the user has not voted, return an error
+            return JsonResponse(
+                data={
+                    "status": "success",
+                    "detail": "Your response has been recorded.",
+                },
+                status=200,
+            )
+
+        candidate = get_object_or_404(office.candidates, pk=candidate_pk)
         form = self.form_class(data={"candidate": candidate, "voter": voter})
 
         if not form.is_valid():

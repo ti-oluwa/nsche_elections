@@ -36,11 +36,10 @@ class SignInView(generic.TemplateView):
 
     template_name = "accounts/signin.html"
     form_class = SignInForm
-    
-    @redirect_authenticated("elections:index")
+
+    @redirect_authenticated("elections:election_list")
     def get(self, request, *args: str, **kwargs):
         return super().get(request, *args, **kwargs)
-
 
     def post(self, request, *args: str, **kwargs) -> JsonResponse:
         """Handles user authentication AJAX/Fetch POST request"""
@@ -56,7 +55,7 @@ class SignInView(generic.TemplateView):
                 },
                 status=400,
             )
-        
+
         email = form.cleaned_data["email"]
         password = form.cleaned_data["password"]
         mat_no = form.cleaned_data["matriculation_number"]
@@ -65,9 +64,9 @@ class SignInView(generic.TemplateView):
         )
         if user_account:
             login(request, user_account)
-            
+
             query_params = parse_query_params_from_request(request)
-            next_url = query_params.pop("next", None) 
+            next_url = query_params.pop("next", None)
             if next_url and query_params:
                 other_query_params = urllib_urlencode(query_params)
                 next_url = f"{next_url}?{other_query_params}"
@@ -77,15 +76,11 @@ class SignInView(generic.TemplateView):
                     "detail": f"Hello {user_account.name}!",
                     "redirect_url": next_url or reverse("elections:index"),
                 },
-                status=200
+                status=200,
             )
-        
+
         return JsonResponse(
-            data={
-                "status": "error",
-                "detail": "Invalid credentials!"
-            },
-            status=400
+            data={"status": "error", "detail": "Invalid credentials!"}, status=400
         )
 
 
@@ -99,8 +94,7 @@ class SignOutView(LoginRequiredMixin, generic.View):
         return redirect("accounts:signin")
 
 
-
-@redirect_authenticated("elections:index")
+@redirect_authenticated("elections:election_list")
 class RegistrationView(generic.TemplateView):
     template_name = "accounts/registration.html"
 
@@ -193,7 +187,7 @@ class OTPVerificationView(generic.View):
                 },
                 status=400,
             )
-        
+
         with transaction.atomic():
             is_valid = verify_identifier_totp_token(token=otp, identifier=student.id)
             # is_valid = dummy_verify_totp_token(token=otp, identifier=student.id)
@@ -250,13 +244,13 @@ class RegistrationCompletionView(generic.CreateView):
         password = form_data.get("password")
         password_set_token = form_data.pop("password_set_token")
         timezone = form_data.pop("timezone", None)
-        
+
         with transaction.atomic():
             with capture.capture(
                 (Student.DoesNotExist, InvalidToken),
                 content="Session expired. Please refresh and try again.",
                 code=400,
-            ):  
+            ):
                 data = exchange_token_for_data(password_set_token)
                 student_id = data.get("student_id")
                 student = Student.objects.get(id=student_id)
@@ -270,6 +264,13 @@ class RegistrationCompletionView(generic.CreateView):
                 account.save()
             student.account = account
             student.save()
+            # Just log in the user after registration
+            # Make sure to use the custom authentication backend for student users
+            login(
+                request,
+                account,
+                backend="apps.accounts.auth_backends.StudentUserAuthenticationBackend",
+            )
 
         return JsonResponse(
             data={

@@ -148,10 +148,10 @@ header > #dropdown-nav{
 }
 
 .page-content .page-head h1{
-    font-size: clamp(1.5rem, 2vw, 1.8rem);
+    font-size: clamp(1.2rem, 2.5vw, 1.8rem);
     font-weight: 600;
     margin-block: 0;
-    flex-shrink: 0;
+    text-wrap: wrap;
     color: var(--text-light);
     font-family: "Raleway";
     line-height: 1.6;
@@ -159,20 +159,21 @@ header > #dropdown-nav{
 
 .page-head .page-head-btns{
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
-    flex-shrink: 0;
 }
 
 .page-head-btns .btn{
     padding: 8px 12px !important;
+    flex-shrink: 0;
     font-size: 0.9rem !important;
 }
 
 .page-content .page-body{
+    width: 100%;
     padding: 20px 14px;
     background: var(--light-gray);
     border-radius: 4px;
-    /* overflow-x: auto; */
 }
 
 /* MEDIA QUERIES */
