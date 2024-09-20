@@ -1,9 +1,10 @@
 import uuid
+from xml.dom.domreg import registered
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone, text
 
-from .managers import ElectionManager, CandidateManager, OfficeManager, VoteManager
+from .managers import ElectionManager, CandidateManager, OfficeManager
 
 class Election(models.Model):
     """Model for election configuration."""
@@ -23,6 +24,9 @@ class Election(models.Model):
     end_date = models.DateTimeField(
         help_text=_("When the election ends."),   
     )
+
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     objects = ElectionManager()
 
@@ -87,6 +91,9 @@ class Office(models.Model):
     )
     is_active = models.BooleanField(default=True, help_text=_("Is the office active?"))
 
+    added_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     objects = OfficeManager()
 
     class Meta:
@@ -113,6 +120,9 @@ class Candidate(models.Model):
     disqualified = models.BooleanField(
         default=False, help_text=_("Is the candidate disqualified?")
     )
+
+    added_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     objects = CandidateManager()
 
@@ -141,9 +151,9 @@ class Vote(models.Model):
         help_text=_("Voter that cast the vote."),
         related_name="+",
     )
-    is_valid = models.BooleanField(default=True, help_text=_("Is the vote valid?"))
 
-    objects = VoteManager()
+    registered_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name_plural = _("Votes")

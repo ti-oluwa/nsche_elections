@@ -40,7 +40,7 @@ class CandidateQuerySet(models.QuerySet):
     def with_votes_count(self):
         return self.annotate(
             votes_count=models.Count(
-                "votes", filter=models.Q(votes__is_valid=True), distinct=True
+                "votes", distinct=True
             )
         )
 
@@ -66,7 +66,7 @@ class OfficeQuerySet(models.QuerySet):
         # in the queryset, if any
         return self.annotate(
             leading_candidate=models.Subquery(
-                Candidate.objects.filter(
+                queryset=Candidate.objects.filter(
                     office=models.OuterRef("pk"), disqualified=False
                 )
                 .with_votes_count()
@@ -89,13 +89,3 @@ class OfficeManager(models.Manager.from_queryset(OfficeQuerySet)):
     pass
 
 
-class VoteQuerySet(models.QuerySet):
-    def valid(self):
-        return self.filter(is_valid=True)
-
-    def invalid(self):
-        return self.filter(is_valid=False)
-
-
-class VoteManager(models.Manager.from_queryset(VoteQuerySet)):
-    pass

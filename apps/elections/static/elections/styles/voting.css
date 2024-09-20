@@ -1,0 +1,32 @@
+.election-card-schedule .form-card{
+    width: max-content;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 4px;
+}
+
+.election-card-schedule .form-card .form-fields > .form-field{
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    gap: 10px;
+    width: max-content;
+}
+
+.election-card-schedule .form-card .form-fields > .form-field > label{
+    font-size: clamp(0.8rem, 2vw, 0.95rem);
+    font-weight: 500;
+    color: var(--dark-gray);
+    flex-shrink: 0;
+}
+
+.election-card-schedule .form-card button{
+    width: max-content;
+    padding: 8px 12px;
+    font-size: clamp(0.7rem, 2vw, 0.9rem);
+    color: var(--parchment);
+    background: var(--jasper);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+}

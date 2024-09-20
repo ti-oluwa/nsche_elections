@@ -1,8 +1,15 @@
+import json
+import typing
 from django.db import models
+from django.shortcuts import get_object_or_404
+from django.urls import reverse
 from django.views import generic
+from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import Election
+from .models import Election, Office
+from .forms import VoteForm
+from helpers.exceptions import capture
 
 
 election_qs = Election.objects.prefetch_related("offices__candidates").all()
@@ -42,7 +49,59 @@ class ElectionDetailView(LoginRequiredMixin, generic.DetailView):
     slug_url_kwarg = "slug"
 
 
+class VotingView(LoginRequiredMixin, generic.TemplateView):
+    template_name = "elections/voting.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["election"] = get_object_or_404(election_qs, slug=self.kwargs["slug"])
+        return context
+
+
+@capture.enable
+@capture.capture(content="Oops! An error occurred while registering your vote.")
+class VoteRegistrationView(LoginRequiredMixin, generic.View):
+    """View for registering votes."""
+
+    http_method_names = ["post"]
+    form_class = VoteForm
+
+    def get_object(self) -> Office:
+        election = get_object_or_404(election_qs, slug=self.kwargs["slug"])
+        office = get_object_or_404(
+            election.offices.prefetch_related("candidates"), pk=self.kwargs["office_id"]
+        )
+        return office
+
+    def post(self, request, *args, **kwargs):
+        data: typing.Dict = json.loads(request.body)
+        voter = self.request.user
+        office = self.get_object()
+        candidate = get_object_or_404(office.candidates, pk=data["candidate"])
+        form = self.form_class(data={"candidate": candidate, "voter": voter})
+
+        if not form.is_valid():
+            return JsonResponse(
+                data={
+                    "status": "error",
+                    "detail": "An error occurred",
+                    "errors": form.errors,
+                },
+                status=400,
+            )
+
+        form.save()
+        return JsonResponse(
+            data={
+                "status": "success",
+                "detail": f"You voted {candidate.name} for {office.name}!",
+            },
+            status=200,
+        )
+
 
 index_view = IndexView.as_view()
 election_list_view = ElectionListView.as_view()
 election_detail_view = ElectionDetailView.as_view()
+voting_view = VotingView.as_view()
+vote_registration_view = VoteRegistrationView.as_view()

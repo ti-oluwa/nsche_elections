@@ -19,7 +19,7 @@
 
             <div class="page-head-btns">
                 {% if election.is_ongoing %}
-                <a href="">
+                <a href="{% url 'elections:voting' election.slug %}">
                     <button class="btn btn-primary">
                         Proceed to vote
                     </button>
@@ -56,11 +56,11 @@
                     <div class="election-card-schedule">
                         {% if office.election.is_upcoming %}
                             {% for candidate in office.candidates.all %}
-                            <p>{{ candidate | title }}</p>
+                            <p title="{{ candidate.manifesto }}">{{ candidate | title }}</p>
                             {% endfor %}
                         {% else %}
                             {% for candidate in office.candidates.ordered_by_votes_count %}
-                            <p>{{ candidate | title }} - <span class="votes-count">{{ candidate.votes_count }} votes</span></p>
+                            <p title="{{ candidate.manifesto }}">{{ candidate | title }} - <span class="votes-count">{{ candidate.votes_count }} vote{{ candidate.votes_count|pluralize:"s" }}</span></p>
                             {% endfor %}
                         {% endif %}
                     </div>

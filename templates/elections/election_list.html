@@ -42,9 +42,9 @@
                     {% endif %}
 
                     <div class="election-card-meta">
-                        <p>{{ election.offices_count }} Offices</p>
+                        <p>{{ election.offices_count }} Office{{ election.offices_count|pluralize:"s" }}</p>
                         <p>:</p>
-                        <p>{{ election.candidates_count }} Candidates</p>
+                        <p>{{ election.candidates_count }} Candidate{{ election.candidates_count|pluralize:"s" }}</p>
                     </div>
 
                     <div class="election-card-schedule">
@@ -58,7 +58,7 @@
                         <button class="btn btn-secondary" style="font-weight: 600;">View Details</button>
                     </a>
                     {% if election.is_ongoing %}
-                    <a>
+                    <a href="{% url 'elections:voting' election.slug %}">
                         <button class="btn btn-primary">Vote Now</button>
                     </a>
                     {% endif %}

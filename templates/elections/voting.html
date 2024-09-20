@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'core//styles//form_card.css' %}">
+<link rel="stylesheet" href="{% static 'elections//styles//election_base.css' %}">
+<link rel="stylesheet" href="{% static 'elections//styles//voting.css' %}">
+{% endblock styles %}
+
+{% block page_title %}{{ election.name }}{% endblock page_title %}
+
+
+{% block content %}
+<div class="container">
+    <main class="page-content">
+        <section class="page-head">
+            <h1>
+                {{ election | upper }}
+            </h1>
+
+            {% if election.is_ongoing %}
+            <div class="page-head-btns">
+                <button class="btn btn-secondary" disabled>
+                    Voting ends in {{ election.end_date|timeuntil }}
+                </button>
+            </div>
+            {% endif %}
+        </section>
+
+        <div class="page-body">
+            {% for office in election.offices.with_candidates_count %}
+            <div class="election-card">
+                <div class="election-card-info">
+                    <h3>{{ office.name | upper }}</h3>
+
+                    {% if office.description %}
+                    <p>{{ office.description }}</p>
+                    {% endif %}
+
+                    <div class="election-card-meta">
+                        <p>Candidates ({{ office.candidates_count }})</p>
+                    </div>
+
+                    <div class="election-card-schedule">
+                        <div class="form-card">
+                            <form action="{% url 'elections:vote' election.slug office.pk %}" class="voting-form">
+                                {% csrf_token %}
+                                <div class="form-fields">
+                                    {% for candidate in office.candidates.all %}
+                                    <div class="form-field"> 
+                                        <label for="{{ candidate.pk }}">{{ candidate.name }}</label>
+                                        <input 
+                                            type="radio" 
+                                            id="{{ candidate.pk }}"
+                                            value="{{ candidate.pk }}" 
+                                            name="candidate"
+                                            class="form-input"
+                                            title="Vote for {{ candidate.name }}"
+                                        >
+                                        <small class="field-message"></small>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+            
+                                <div class="submit-btn-wrapper">
+                                    <button class="btn-primary submit-btn" type="submit">
+                                        Vote
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'core//scripts//formCard.js' %}"></script>
+<script src="{% static 'elections//scripts//voting.js' %}"></script>
+{% endblock scripts %}

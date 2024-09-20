@@ -3,6 +3,7 @@
     background: transparent;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    justify-content: center;
     gap: 30px 40px;
     padding: 20px;
     border-radius: 10px;

@@ -18,13 +18,17 @@
             </h1>
 
             <div class="page-head-btns">
-                <button class="btn btn-primary" id="add-student-btn">
-                    See Upcoming Elections
-                </button>
-
-                <button class="btn btn-secondary" id="import-students-btn" style="font-weight: 600;">
-                    View Past Elections
-                </button>
+                <a href="{% url 'elections:election_list' %}?status=upcoming">
+                    <button class="btn btn-primary" id="add-student-btn">
+                        See upcoming elections
+                    </button>
+                </a>
+                
+                <a href="{% url 'elections:election_list' %}?status=ongoing">
+                    <button class="btn btn-secondary" id="import-students-btn" style="font-weight: 600;">
+                        View ongoing elections
+                    </button>
+                </a>
             </div>
         </section>
 
