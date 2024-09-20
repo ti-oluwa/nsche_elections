@@ -68,8 +68,11 @@ class StudentUserAuthenticationBackend(ModelBackend):
             return None
         return None
 
-    def authenticate_user(self, email: str, password: str):
+    def authenticate_user(self, **credentials):
         """Authenticate regular users by email."""
+        email = self.get_email(credentials)
+        password = credentials.get("password", None)
+        
         try:
             user = UserModel.objects.get(email=email)
             if user.check_password(password):
