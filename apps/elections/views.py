@@ -91,7 +91,7 @@ class VoteRegistrationView(LoginRequiredMixin, generic.View):
                 return JsonResponse(
                     data={
                         "status": "success",
-                        "detail": f"You successfully un-voted for {office.name.upper()}!",
+                        "detail": f"Your vote for {office.name.upper()} has been withdrawn!",
                     },
                     status=200,
                 )
