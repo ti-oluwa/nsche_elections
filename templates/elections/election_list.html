@@ -55,7 +55,13 @@
 
                 <div class="election-card-actions">
                     <a href="{% url 'elections:election_detail' election.slug %}">
-                        <button class="btn btn-secondary" style="font-weight: 600;">View Details</button>
+                        <button class="btn btn-secondary" style="font-weight: 600;">
+                            {% if election.is_upcoming %}
+                            View Details
+                            {% else %}
+                            View Results
+                            {% endif %}
+                        </button>
                     </a>
                     {% if election.is_ongoing %}
                     <a href="{% url 'elections:voting' election.slug %}">
