@@ -95,7 +95,7 @@ class VoteRegistrationView(LoginRequiredMixin, generic.View):
                     },
                     status=200,
                 )
-            
+
             # If the user has not voted, return an error
             return JsonResponse(
                 data={
@@ -140,11 +140,9 @@ class VoteLockInView(LoginRequiredMixin, generic.View):
 
         if not VoteLock.objects.filter(election=election, voter=voter).exists():
             VoteLock.objects.create(election=election, voter=voter)
-        
-        return redirect("elections:voting", slug=election.slug)
-        
 
-        
+        return redirect("elections:voting", slug=election.slug)
+
 
 index_view = IndexView.as_view()
 election_list_view = ElectionListView.as_view()

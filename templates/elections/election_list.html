@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load tz %}
 
 {% block styles %}
 <link rel="stylesheet" href="{% static 'elections//styles//election_base.css' %}">
@@ -46,11 +47,13 @@
                         <p>:</p>
                         <p>{{ election.candidates_count }} Candidate{{ election.candidates_count|pluralize:"s" }}</p>
                     </div>
-
+                    
+                    {% timezone request.user.timezone %}
                     <div class="election-card-schedule">
                         <p>Start Date: {{ election.start_date|date:"jS F Y, H:i"}} </p>
                         <p>End Date: {{ election.end_date|date:"jS F Y, H:i"}}</p>
                     </div>
+                    {% endtimezone %}
                 </div>
 
                 <div class="election-card-actions">
