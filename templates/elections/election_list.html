@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'elections//styles//election_base.css' %}">
+<link rel="stylesheet" href="{% static 'elections//styles//election_list.css' %}">
+{% endblock styles %}
+
+{% block page_title %}Elections{% endblock page_title %}
+
+
+{% block content %}
+<div class="container">
+    <main class="page-content">
+        <section class="page-head">
+            <h1>
+                Elections
+            </h1>
+
+            <div class="page-head-btns">
+                <a href="{% url 'elections:election_list' %}?status=ongoing">
+                    <button class="btn btn-primary">
+                        See ongoing elections
+                    </button>
+                </a>
+                
+                <a href="{% url 'elections:election_list' %}?status=upcoming">
+                    <button class="btn btn-secondary" style="font-weight: 600;">
+                        View upcoming elections
+                    </button>
+                </a>
+            </div>
+        </section>
+
+        <div class="page-body">
+            {% for election in elections.with_counts %}
+            <div class="election-card">
+                <div class="election-card-info">
+                    <h3>{{ election.name | upper }}</h3>
+                    {% if election.description %}
+                    <p>{{ election.description }}</p>
+                    {% endif %}
+
+                    <div class="election-card-meta">
+                        <p>{{ election.offices_count }} Offices</p>
+                        <p>:</p>
+                        <p>{{ election.candidates_count }} Candidates</p>
+                    </div>
+
+                    <div class="election-card-schedule">
+                        <p>Start Date: {{ election.start_date|date:"jS F Y, H:i"}} </p>
+                        <p>End Date: {{ election.end_date|date:"jS F Y, H:i"}}</p>
+                    </div>
+                </div>
+
+                <div class="election-card-actions">
+                    <a href="{% url 'elections:election_detail' election.slug %}">
+                        <button class="btn btn-secondary" style="font-weight: 600;">View Details</button>
+                    </a>
+                    {% if election.is_ongoing %}
+                    <a>
+                        <button class="btn btn-primary">Vote Now</button>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+</div>
+{% endblock %}

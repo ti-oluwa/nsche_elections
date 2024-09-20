@@ -1,5 +1,7 @@
 from django.contrib import admin
+
 from .models import Election, Office, Candidate
+from .forms import ElectionForm, OfficeForm, CandidateForm
 
 
 @admin.register(Election)
@@ -21,6 +23,7 @@ class ElectionAdmin(admin.ModelAdmin):
     save_on_top = True
     save_as = True
     list_per_page = 20
+    form = ElectionForm
 
     def has_add_permission(self, request):
         # Only allow superusers or staff to add elections
@@ -65,6 +68,10 @@ class OfficeAdmin(admin.ModelAdmin):
     actions = None
     save_on_top = True
     save_as = True
+    form = OfficeForm
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).with_leading_candidate()
 
     def has_add_permission(self, request):
         # Only allow superusers to add new offices
@@ -98,6 +105,10 @@ class CandidateAdmin(admin.ModelAdmin):
     actions = None
     save_on_top = True
     save_as = True
+    form = CandidateForm
+    
+    def get_queryset(self, request):
+        return super().get_queryset(request).with_votes_count()
 
     def has_add_permission(self, request):
         # Only allow superusers or election managers to add candidates

@@ -45,7 +45,7 @@ header > nav{
 
 header > nav > #logo > a{
     font-family: 'Manrope';
-    font-size: 24px;
+    font-size: clamp(1.3rem, 2.5vw, 2rem);
     font-weight: 700;
     color: var(--deep-blue);
     text-decoration: none;
@@ -160,6 +160,7 @@ header > #dropdown-nav{
 .page-head .page-head-btns{
     display: flex;
     gap: 10px;
+    flex-shrink: 0;
 }
 
 .page-head-btns .btn{

@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'elections//styles//election_base.css' %}">
+<link rel="stylesheet" href="{% static 'elections//styles//election_detail.css' %}">
+{% endblock styles %}
+
+{% block page_title %}{{ election.name }}{% endblock page_title %}
+
+
+{% block content %}
+<div class="container">
+    <main class="page-content">
+        <section class="page-head">
+            <h1>
+                {{ election | upper }}
+            </h1>
+
+            <div class="page-head-btns">
+                {% if election.is_ongoing %}
+                <a href="">
+                    <button class="btn btn-primary">
+                        Proceed to vote
+                    </button>
+                </a>
+                {% elif election.has_ended %}
+                <a href="">
+                    <button class="btn btn-secondary" style="font-weight: 600;">
+                        View Results
+                    </button>
+                </a>
+                {% elif election.is_upcoming %}
+                <button class="btn btn-primary" disabled>
+                    Proceed to vote
+                </button>
+                {% endif %}
+
+            </div>
+        </section>
+
+        <div class="page-body">
+            {% for office in election.offices.with_candidates_count %}
+            <div class="election-card">
+                <div class="election-card-info">
+                    <h3>{{ office.name | upper }}</h3>
+
+                    {% if office.description %}
+                    <p>{{ office.description }}</p>
+                    {% endif %}
+
+                    <div class="election-card-meta">
+                        <p>Candidates ({{ office.candidates_count }})</p>
+                    </div>
+
+                    <div class="election-card-schedule">
+                        {% if office.election.is_upcoming %}
+                            {% for candidate in office.candidates.all %}
+                            <p>{{ candidate | title }}</p>
+                            {% endfor %}
+                        {% else %}
+                            {% for candidate in office.candidates.ordered_by_votes_count %}
+                            <p>{{ candidate | title }} - <span class="votes-count">{{ candidate.votes_count }} votes</span></p>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+</div>
+{% endblock %}

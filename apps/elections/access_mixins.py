@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import AccessMixin
 
-from .helpers import get_ongoing_elections
+from .models import Election
 
 
 class ElectionOngoingMixin(AccessMixin):
@@ -12,7 +12,7 @@ class ElectionOngoingMixin(AccessMixin):
         return "You are not allowed to access this page as an election needs to be ongoing for access to be granted."
 
     def dispatch(self, request, *args, **kwargs):
-        ongoing_elections = get_ongoing_elections(prefetch_related=False)
+        ongoing_elections = Election.objects.only("pk").ongoing()
         # Check if there's at least one ongoing election
         if not ongoing_elections.exists() and not request.user.is_superuser:
             return self.handle_no_permission()
@@ -29,7 +29,7 @@ class ElectionNotOngoingMixin(AccessMixin):
 
     def dispatch(self, request, *args, **kwargs):
         # Check if there are any ongoing elections
-        ongoing_elections = get_ongoing_elections(prefetch_related=False)
+        ongoing_elections = Election.objects.only("pk").ongoing()
         if ongoing_elections.exists() and not request.user.is_superuser:
             return self.handle_no_permission()
         return super().dispatch(request, *args, **kwargs)

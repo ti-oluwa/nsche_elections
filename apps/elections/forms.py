@@ -1,52 +1,63 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from django.utils import timezone
+from .models import Election, Office, Candidate
+from django.utils.translation import gettext_lazy as _
 
-from .models import ElectionConfig
 
-
-class ElectionConfigForm(forms.ModelForm):
-    """ModelForm for ElectionConfig model."""
+class ElectionForm(forms.ModelForm):
+    """Form for creating and updating elections."""
 
     class Meta:
-        model = ElectionConfig
-        fields = "__all__"
-        widgets = {
-            "election_starts": forms.DateTimeInput(attrs={"type": "datetime-local"}),
-            "election_ends": forms.DateTimeInput(attrs={"type": "datetime-local"}),
-        }
+        model = Election
+        fields = ["name", "description", "start_date", "end_date"]
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        start_date = cleaned_data.get("start_date")
+        end_date = cleaned_data.get("end_date")
 
-        def clean_election_starts(self):
-            election_starts = self.cleaned_data.get("election_starts")
-            if election_starts is None:
-                return election_starts
-            
-            if election_starts < timezone.now():
-                raise forms.ValidationError(
-                    "Election cannot be scheduled to start in the past."
+        if start_date and end_date:
+            if start_date >= end_date:
+                raise ValidationError(
+                    _("The start date must be earlier than the end date.")
                 )
-            return election_starts
 
-        def clean_election_ends(self):
-            election_ends = self.cleaned_data.get("election_ends")
-            if election_ends is None:
-                return election_ends
-            
-            if election_ends < timezone.now():
-                raise forms.ValidationError(
-                    "Election cannot be scheduled to end in the past."
-                )
-            return election_ends
+            if start_date < timezone.now():
+                raise ValidationError(_("The start date cannot be in the past."))
 
-        def clean(self):
-            cleaned_data = super().clean()
-            election_starts = cleaned_data.get("election_starts")
-            election_ends = cleaned_data.get("election_ends")
+        return cleaned_data
 
-            if not election_starts or not election_ends:
-                return cleaned_data
 
-            if election_starts >= election_ends:
-                raise forms.ValidationError(
-                    "Election cannot be scheduled to start after it the scheduled end period."
-                )
-            return cleaned_data
+class OfficeForm(forms.ModelForm):
+    """Form for creating and updating offices."""
+
+    class Meta:
+        model = Office
+        fields = ["name", "description", "election", "is_active"]
+
+    def clean_election(self):
+        election = self.cleaned_data.get("election")
+
+        if election.has_ended:
+            raise ValidationError(
+                _("You cannot assign an office to an ended election.")
+            )
+        return election
+
+
+class CandidateForm(forms.ModelForm):
+    """Form for creating and updating candidates."""
+
+    class Meta:
+        model = Candidate
+        fields = ["name", "office", "manifesto", "disqualified"]
+
+    def clean_office(self):
+        office = self.cleaned_data.get("office")
+
+        if office.election.has_ended:
+            raise ValidationError(
+                _("You cannot assign a candidate to an ended election's office.")
+            )
+        return office

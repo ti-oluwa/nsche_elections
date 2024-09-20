@@ -1,0 +1,90 @@
+
+.page-content .page-body{
+    background: transparent;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 30px 40px;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.election-card{
+    background: rgba(244, 233, 205, 0.65);
+    padding: 24px 30px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 18px;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.15), 0px 2px 4px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
+    min-height: 300px;
+    max-height: 800px;
+    overflow-y: auto;
+}
+
+.election-card:nth-child(odd){
+    background: rgba(213, 220, 229, 0.65);
+}
+
+.election-card .election-card-info{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+}
+
+.election-card-info > h3{
+    color: var(--jasper);
+    font-size: clamp(1.2rem, 1.5vw, 1.6rem);
+    font-weight: 600;
+    margin-bottom: 10px;
+    font-family: "Raleway";
+    line-height: 1.6;
+}
+
+.election-card-info > p{
+    color: var(--dark-gray);
+    font-size: clamp(0.8rem, 2vw, 1rem);
+    font-weight: 400;
+}
+
+.election-card-info .election-card-meta{
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.election-card-info .election-card-meta > p{
+    color: var(--deep-blue);
+    font-family: "DM Sans";
+    font-size: clamp(0.7rem, 2vw, 0.9rem);
+    font-weight: 400;
+}
+
+.election-card-info .election-card-schedule{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.election-card-schedule > p{
+    color: var(--dark-gray);
+    font-size: clamp(0.7rem, 2vw, 0.9rem);
+    font-weight: 400;
+}
+
+.election-card .election-card-actions{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.election-card-actions button{
+    width: 100%;
+    padding: 12px 24px;
+    font-size: clamp(0.8rem, 2vw, 1rem);
+}

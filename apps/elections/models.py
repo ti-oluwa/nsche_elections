@@ -1,12 +1,22 @@
+import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django.utils import timezone
+from django.utils import timezone, text
 
+from .managers import ElectionManager, CandidateManager, OfficeManager, VoteManager
 
 class Election(models.Model):
     """Model for election configuration."""
 
+    slug = models.SlugField(
+        unique=True,
+        help_text=_("Unique identifier for the election. Used in URLs."),
+        editable=False,
+    )
     name = models.CharField(max_length=255)
+    description = models.TextField(
+        blank=True, null=True, help_text=_("Description of the election.")
+    )
     start_date = models.DateTimeField(
         help_text=_("When the election starts."),
     )
@@ -14,15 +24,17 @@ class Election(models.Model):
         help_text=_("When the election ends."),   
     )
 
+    objects = ElectionManager()
+
     class Meta:
         verbose_name_plural = _("Elections")
-        ordering = ["-start_date", "name", "end_date"]
+        ordering = ["-start_date", "end_date", "name"]
 
     def __str__(self):
         name = self.name.strip().lower()
         suffix = "ongoing" if self.is_ongoing else "upcoming" if self.is_upcoming else "ended"
 
-        if not name.endswith("election"):
+        if "election" not in name:
             name += " election"
         return f"{name} ({suffix})".title()
 
@@ -40,7 +52,22 @@ class Election(models.Model):
     def has_ended(self):
         """Check if the election has ended."""
         return timezone.now() > self.end_date
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            slug = get_slug_from_name(self.name)
 
+            while Election.objects.filter(slug=slug).exists():
+                slug = get_slug_from_name(self.name)
+            self.slug = slug
+            
+        super().save(*args, **kwargs)
+
+
+def get_slug_from_name(name):
+    """Generate a unique slug from the given name."""
+    slug = text.slugify(name)
+    return f"{slug}-{uuid.uuid4().hex[:8]}"
 
 
 class Office(models.Model):
@@ -60,25 +87,14 @@ class Office(models.Model):
     )
     is_active = models.BooleanField(default=True, help_text=_("Is the office active?"))
 
+    objects = OfficeManager()
+
     class Meta:
         verbose_name_plural = _("Offices")
         ordering = ("name",)
 
     def __str__(self):
         return f"{self.name} ({self.election})"
-
-    @property
-    def leading_candidate(self):
-        """Return the candidate with the most valid votes for the office."""
-        leading_candidate = (
-            Candidate.objects.filter(office=self, disqualified=False)
-            .annotate(
-                votes_count=models.Count("votes", filter=models.Q(votes__is_valid=True))
-            )
-            .order_by("-votes_count")
-            .first()
-        )
-        return leading_candidate
 
 
 class Candidate(models.Model):
@@ -98,6 +114,8 @@ class Candidate(models.Model):
         default=False, help_text=_("Is the candidate disqualified?")
     )
 
+    objects = CandidateManager()
+
     class Meta:
         verbose_name_plural = _("Candidates")
         ordering = ("name",)
@@ -105,10 +123,6 @@ class Candidate(models.Model):
     def __str__(self):
         return self.name
 
-    @property
-    def votes_count(self):
-        """Return the number of valid votes the candidate has received."""
-        return Vote.objects.filter(candidate=self, is_valid=True).count()
 
 
 class Vote(models.Model):
@@ -128,6 +142,8 @@ class Vote(models.Model):
         related_name="+",
     )
     is_valid = models.BooleanField(default=True, help_text=_("Is the vote valid?"))
+
+    objects = VoteManager()
 
     class Meta:
         verbose_name_plural = _("Votes")

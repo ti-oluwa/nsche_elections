@@ -45,6 +45,7 @@
                         <li><a href="{% url 'accounts:signin' %}">Sign In</a></li>
                         {% endif %}
                     {% else %}
+                    <li><a href="{% url 'elections:election_list' %}">Elections</a></li>
                     <li><a href="{% url 'accounts:signout' %}">Sign Out</a></li>
                     {% endif %}
                 </ul>
@@ -71,6 +72,7 @@
                     <li><a href="{% url 'accounts:signin' %}">Sign In</a></li>
                     {% endif %}
                 {% else %}
+                <li><a href="{% url 'elections:election_list' %}">Elections</a></li>
                 <li><a href="{% url 'accounts:signout' %}">Sign Out</a></li>
                 {% endif %}
             </ul>

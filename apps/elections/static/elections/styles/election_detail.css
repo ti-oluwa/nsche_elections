@@ -1,0 +1,16 @@
+body {
+    background: url("../images/chem1.jpg");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.election-card-schedule > p{
+    color: var(--dark-gray);
+    font-size: clamp(0.8rem, 2vw, 0.95rem);
+    font-weight: 600;
+}
+
+.votes-count{
+    color: var(--jasper);
+}
