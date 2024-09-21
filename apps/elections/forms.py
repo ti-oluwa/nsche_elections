@@ -86,7 +86,7 @@ class VoteForm(forms.ModelForm):
             )
 
         if candidate.office.election.has_ended:
-            raise forms.ValidationError(_("You cannot vote in an ended election."))
+            raise forms.ValidationError(_("Invalid vote. Voting has ended!"))
 
         if Vote.objects.filter(candidate=candidate, voter=voter).exists():
             raise forms.ValidationError(

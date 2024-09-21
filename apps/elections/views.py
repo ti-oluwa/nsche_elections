@@ -93,6 +93,15 @@ class VoteRegistrationView(LoginRequiredMixin, generic.View):
         office = self.get_object()
         candidate_pk: str = data.get("candidate")
 
+        if office.election.has_ended:
+            return JsonResponse(
+                data={
+                    "status": "error",
+                    "detail": "Invalid vote. Voting has ended!",
+                },
+                status=400,
+            )
+
         if candidate_pk.lower() in ["null", "undefined", "nil", "none"]:
             # If the user has already voted, remove the vote for the office
             votes = Vote.objects.filter(voter=voter, candidate__office=office)

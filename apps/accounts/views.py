@@ -29,7 +29,6 @@ from apps.tokens.totp import (
     exchange_data_for_token,
     exchange_token_for_data,
 )
-from .models import UserAccount
 
 
 class SignInView(generic.TemplateView):
