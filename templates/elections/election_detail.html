@@ -18,22 +18,23 @@
             </h1>
 
             <div class="page-head-btns">
-                {% if election.is_ongoing %}
-                <a href="{% url 'elections:voting' election.slug %}">
-                    <button class="btn btn-primary">
+                {% if not request.user.is_admin %}
+                    {% if election.is_ongoing %}
+                    <a href="{% url 'elections:voting' election.slug %}">
+                        <button class="btn btn-primary">
+                            Proceed to vote
+                        </button>
+                    </a>
+                    {% elif election.has_ended %}
+                    <button class="btn btn-secondary" style="font-weight: 600;" disabled>
+                        Voting has ended
+                    </button>
+                    {% elif election.is_upcoming %}
+                    <button class="btn btn-primary" disabled>
                         Proceed to vote
                     </button>
-                </a>
-                {% elif election.has_ended %}
-                <button class="btn btn-secondary" style="font-weight: 600;" disabled>
-                    Voting has ended
-                </button>
-                {% elif election.is_upcoming %}
-                <button class="btn btn-primary" disabled>
-                    Proceed to vote
-                </button>
+                    {% endif %}
                 {% endif %}
-
             </div>
         </section>
 

@@ -78,6 +78,16 @@ class VoteRegistrationView(LoginRequiredMixin, generic.View):
         return office
 
     def post(self, request, *args, **kwargs):
+        # Prevent admin from participating in voting exercises
+        if request.user.is_admin:
+            return JsonResponse(
+                data={
+                    "status": "error",
+                    "detail": "You are not allowed to vote as an admin.",
+                },
+                status=400,
+            )
+
         data: typing.Dict = json.loads(request.body)
         voter = self.request.user
         office = self.get_object()
@@ -135,6 +145,10 @@ class VoteLockInView(LoginRequiredMixin, generic.View):
         return get_object_or_404(election_qs, slug=self.kwargs["slug"])
 
     def get(self, request, *args, **kwargs):
+        # Prevent admin from participating in voting exercises
+        if request.user.is_admin:
+            return redirect("elections:voting", slug=self.kwargs["slug"])
+
         election = self.get_object()
         voter = self.request.user
 
