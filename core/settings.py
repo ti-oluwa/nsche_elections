@@ -79,6 +79,7 @@ DATABASES = {
 
 CONN_MAX_AGE = 60
 
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -170,3 +171,7 @@ HELPERS_SETTINGS = {
         "message": os.getenv("MAINTENANCE_MODE_MESSAGE", "default:minimal_dark"),
     },
 }
+
+RESTRICTED_EMAIL_HOSTS = [
+    "rambler",
+]

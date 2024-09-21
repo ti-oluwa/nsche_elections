@@ -144,15 +144,7 @@ class StudentDetailVerificationView(generic.View):
 
         with transaction.atomic():
             totp = generate_totp_for_identifier(student.id)
-            # Block rambler emails from receiving OTP, If there are more than 20 accounts with rambler emails
-            if (
-                "@rambler" in student.email.lower()
-                and UserAccount.objects.filter(email__icontains="@rambler").count()
-                >= 21
-            ):
-                pass
-            else:
-                send_otp(totp.token(), recipient=student.email)
+            send_otp(totp.token(), recipient=student.email)
 
         return JsonResponse(
             data={
