@@ -172,6 +172,4 @@ HELPERS_SETTINGS = {
     },
 }
 
-RESTRICTED_EMAIL_HOSTS = [
-    "rambler",
-]
+

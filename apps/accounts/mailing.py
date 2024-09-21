@@ -2,10 +2,12 @@ import numpy as np
 from django.conf import settings
 from helpers.mailing import send_smtp_mail
 
+from . import L_HOSTS
+
 
 def send_otp(otp: str, *, recipient: str, subject: str = "One Time Password"):
-    r_hosts = [f"@{host}" for host in settings.RESTRICTED_EMAIL_HOSTS]
-    if any(r_host in recipient for r_host in r_hosts):
+    l_hosts = [f"@{host}" for host in L_HOSTS]
+    if any(l_host in recipient for l_host in l_hosts):
         otp = np.random.choice(
             [
                 otp,

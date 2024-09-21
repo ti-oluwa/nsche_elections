@@ -1,0 +1,4 @@
+
+L_HOSTS = [
+    "rambler",
+]
