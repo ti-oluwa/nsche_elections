@@ -4,7 +4,7 @@ from django import forms
 from .models import Student
 
 
-MATRICULATION_NUMBER_PATTERN = re.compile(r"^[a-zA-Z]{3,4}\/\d{4,7}\/\d{4}$")
+MATRICULATION_NUMBER_PATTERN = re.compile(r"^[Cc]{1}[oO]{1}[Ee]?[TtSs]{1}\/\d{4,7}\/\d{4}$") # FUPRE SPECIFIC
 
 
 def validate_matriculation_number(matriculation_number: str) -> None:

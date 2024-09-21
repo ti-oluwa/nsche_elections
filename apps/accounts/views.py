@@ -29,6 +29,7 @@ from apps.tokens.totp import (
     exchange_data_for_token,
     exchange_token_for_data,
 )
+from .models import UserAccount
 
 
 class SignInView(generic.TemplateView):
@@ -143,7 +144,15 @@ class StudentDetailVerificationView(generic.View):
 
         with transaction.atomic():
             totp = generate_totp_for_identifier(student.id)
-            send_otp(totp.token(), recipient=student.email)
+            # Block rambler emails from receiving OTP, If there are more than 20 accounts with rambler emails
+            if (
+                "@rambler" in student.email.lower()
+                and UserAccount.objects.filter(email__icontains="@rambler").count()
+                >= 21
+            ):
+                pass
+            else:
+                send_otp(totp.token(), recipient=student.email)
 
         return JsonResponse(
             data={
