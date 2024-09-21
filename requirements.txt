@@ -9,3 +9,4 @@ sqlparse==0.5.1
 whitenoise==6.7.0
 django_otp==1.5.4
 django-timezone-field==7.0
+numpy==2.1.1
