@@ -16,12 +16,28 @@ urlpatterns = [
     ),
     path(
         "registration/otp-verification/",
-        views.otp_verification_view,
-        name="otp_verification",
+        views.registration_otp_verification_view,
+        name="registration_otp_verification",
     ),
     path(
         "registration/completion/",
         views.registration_completion_view,
         name="registration_completion",
+    ),
+    path("password-reset/", views.password_reset_view, name="password_reset"),
+    path(
+        "password-reset/initiate/",
+        views.password_reset_initiation_view,
+        name="password_reset_initiation",
+    ),
+    path(
+        "password-reset/verification/",
+        views.password_reset_otp_verification_view,
+        name="password_reset_otp_verification",
+    ),
+    path(
+        "password-reset/completion/",
+        views.password_reset_completion_view,
+        name="password_reset_completion",
     ),
 ]

@@ -163,3 +163,4 @@ cython_debug/
 
 /nsche.json
 db.sqlite3
+/dumpdata.sh

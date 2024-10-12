@@ -55,7 +55,7 @@ class StudentDetailVerificationForm(forms.Form):
         return matriculation_number.upper()
     
 
-class OTPVerificationForm(forms.Form):
+class RegistrationOTPVerificationForm(forms.Form):
     """Form for verifying registration OTP"""
 
     otp = forms.CharField(required=True, max_length=settings.OTP_LENGTH)
@@ -86,3 +86,33 @@ class RegistrationCompletionForm(forms.Form):
         return cleaned_data
 
 
+class PasswordResetInitiationForm(forms.Form):
+    """Form for initiating password reset"""
+
+    email = forms.EmailField(required=True)
+    
+
+
+class PasswordResetOTPVerificationForm(forms.Form):
+    """Form for verifying password reset OTP"""
+
+    otp = forms.CharField(required=True, max_length=settings.OTP_LENGTH)
+    email = forms.EmailField(required=True)
+
+
+class PasswordResetCompletionForm(forms.Form):
+    """Form for completing password reset"""
+
+    password = forms.CharField(widget=forms.PasswordInput, required=True, validators=[validate_password])
+    confirm_password = forms.CharField(widget=forms.PasswordInput, required=True)
+    password_reset_token = forms.CharField(required=True, widget=forms.HiddenInput)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        confirm_password = cleaned_data.get("confirm_password")
+
+        if password and confirm_password and password != confirm_password:
+            raise forms.ValidationError({"confirm_password": "Passwords do not match."})
+
+        return cleaned_data
