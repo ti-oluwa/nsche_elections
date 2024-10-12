@@ -76,16 +76,14 @@ class VoteForm(forms.ModelForm):
         voter = cleaned_data.get("voter")
         election = candidate.office.election
 
-        if VoteLock.objects.filter(
-            election=election, voter=voter
-        ).exists():
+        if VoteLock.objects.filter(election=election, voter=voter).exists():
             raise forms.ValidationError(
                 _(
-                    f"You cannot vote. You have already locked in your vote for {election}."
+                    f"You can no longer vote. You have already locked in your vote for {election}."
                 )
             )
 
-        if candidate.office.election.has_ended:
+        if election.has_ended:
             raise forms.ValidationError(_("Invalid vote. Voting has ended!"))
 
         if Vote.objects.filter(candidate=candidate, voter=voter).exists():

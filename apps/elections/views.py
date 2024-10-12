@@ -115,7 +115,6 @@ class VoteRegistrationView(LoginRequiredMixin, generic.View):
                     status=200,
                 )
 
-            # If the user has not voted, return an error
             return JsonResponse(
                 data={
                     "status": "success",

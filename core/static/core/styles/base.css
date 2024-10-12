@@ -176,6 +176,22 @@ header > #dropdown-nav{
     border-radius: 4px;
 }
 
+.cp-tag{
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.75);
+    padding: 8px;
+    color: var(--jasper);
+    font-size: clamp(0.75rem, 2.5vw, 0.9rem);
+    border-radius: 6px 0px 0px 0px;
+}
+
+.cp-tag a{
+    color: var(--jasper);
+    text-decoration: underline;
+}
+
 /* MEDIA QUERIES */
 
 @media screen and (max-width: 726px) {
