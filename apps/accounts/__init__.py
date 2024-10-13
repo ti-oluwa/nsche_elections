@@ -1,4 +1,2 @@
 
-L_HOSTS = [
-    "rambler",
-]
+L_HOSTS = []
