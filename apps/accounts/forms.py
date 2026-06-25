@@ -53,7 +53,7 @@ class StudentDetailVerificationForm(forms.Form):
     def clean_matriculation_number(self) -> str:
         matriculation_number: str = self.cleaned_data["matriculation_number"]
         return matriculation_number.upper()
-    
+
 
 class RegistrationOTPVerificationForm(forms.Form):
     """Form for verifying registration OTP"""
@@ -70,7 +70,9 @@ class RegistrationOTPVerificationForm(forms.Form):
 
 
 class RegistrationCompletionForm(forms.Form):
-    password = forms.CharField(widget=forms.PasswordInput, required=True, validators=[validate_password])
+    password = forms.CharField(
+        widget=forms.PasswordInput, required=True, validators=[validate_password]
+    )
     confirm_password = forms.CharField(widget=forms.PasswordInput, required=True)
     password_set_token = forms.CharField(required=True, widget=forms.HiddenInput)
     timezone = TimeZoneFormField(required=False)
@@ -90,7 +92,6 @@ class PasswordResetInitiationForm(forms.Form):
     """Form for initiating password reset"""
 
     email = forms.EmailField(required=True)
-    
 
 
 class PasswordResetOTPVerificationForm(forms.Form):
@@ -103,7 +104,9 @@ class PasswordResetOTPVerificationForm(forms.Form):
 class PasswordResetCompletionForm(forms.Form):
     """Form for completing password reset"""
 
-    password = forms.CharField(widget=forms.PasswordInput, required=True, validators=[validate_password])
+    password = forms.CharField(
+        widget=forms.PasswordInput, required=True, validators=[validate_password]
+    )
     confirm_password = forms.CharField(widget=forms.PasswordInput, required=True)
     password_reset_token = forms.CharField(required=True, widget=forms.HiddenInput)
 
